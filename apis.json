@@ -1,0 +1,116 @@
+{
+    "name": "Clearbit",
+    "description": "Clearbit provides powerful products and data APIs to help your business grow. Contact enrichment, lead generation, financial compliance, and more...",
+    "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/11319-clearbit.jpg",
+    "tags": [
+        "api provider",
+        "business",
+        "business intelligence",
+        "general data",
+        "have api",
+        "have swagger",
+        "service api",
+        "target"
+    ],
+    "created": "2019-12-19",
+    "modified": "2019-12-19",
+    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/clearbit\/master\/apis.json",
+    "specificationVersion": "0.14",
+    "apis": [
+        {
+            "name": "Clearbit Person API",
+            "description": null,
+            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/11319-clearbit.jpg",
+            "humanURL": "https:\/\/clearbit.com",
+            "baseURL": "",
+            "tags": [],
+            "properties": [
+                {
+                    "type": "x-openapi",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/clearbit-person-api-openapi.json"
+                },
+                {
+                    "type": "x-openapi",
+                    "url": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/openapis\/clearbit-person-api.json"
+                }
+            ]
+        },
+        {
+            "name": "Clearbit",
+            "description": null,
+            "image": "http:\/\/kinlane-productions.s3.amazonaws.com\/screen-capture-api\/11319-clearbit.jpg",
+            "humanURL": "https:\/\/clearbit.com",
+            "baseURL": "",
+            "tags": [],
+            "properties": [
+                {
+                    "type": "x-openapi",
+                    "url": "https:\/\/raw.githubusercontent.com\/api-evangelist\/1forge\/master\/clearbit-openapi.json"
+                },
+                {
+                    "type": "x-openapi",
+                    "url": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-evangelist-site\/company\/openapis\/clearbit.json"
+                }
+            ]
+        }
+    ],
+    "include": [],
+    "x-common": [
+        {
+            "type": "Blog",
+            "url": "http:\/\/blog.clearbit.co\/"
+        },
+        {
+            "type": "Blog RSS",
+            "url": "http:\/\/blog.clearbit.co\/feed"
+        },
+        {
+            "type": "Curated Source",
+            "url": "http:\/\/blog.clearbit.com\/segment-integration\/"
+        },
+        {
+            "type": "Website",
+            "url": "http:\/\/blog.clearbit.com"
+        },
+        {
+            "type": "Crunchbase",
+            "url": "https:\/\/crunchbase.com\/organization\/clearbit"
+        },
+        {
+            "type": "Email",
+            "url": "success@clearbit.com"
+        },
+        {
+            "type": "Email",
+            "url": "support@clearbit.com"
+        },
+        {
+            "type": "Github",
+            "url": "https:\/\/github.com\/clearbit"
+        },
+        {
+            "type": "Swagger",
+            "url": "http:\/\/kinlane-productions.s3.amazonaws.com\/api-definitions\/swagger\/11319-2019-09-04-03-17-44.json"
+        },
+        {
+            "type": "Pricing",
+            "url": "https:\/\/clearbit.com\/pricing"
+        },
+        {
+            "type": "Twitter",
+            "url": "https:\/\/twitter.com\/clearbit"
+        },
+        {
+            "type": "Website",
+            "url": "http:\/\/clearbit.com"
+        },
+        {
+            "type": "Website",
+            "url": "https:\/\/clearbit.com"
+        },
+        {
+            "type": "Website",
+            "url": "https:\/\/clearbit.co"
+        }
+    ]
+}
