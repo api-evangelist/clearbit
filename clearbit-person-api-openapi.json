@@ -1,0 +1,349 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "v2",
+        "title": "Clearbit Person API",
+        "description": "The Clearbit API for person",
+        "termsOfService": "http:\/\/exmple.com\/license\/"
+    },
+    "servers": [
+        "http:\/\/person.clearbit.com\/v2"
+    ],
+    "paths": {
+        "\/combined\/find": {
+            "get": {
+                "summary": "Retrieves a person and company by email address",
+                "description": "Retrieves a person and company by email address.",
+                "operationId": "GetCombined",
+                "deprecated": 0,
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "the person's email address"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No Error",
+                        "content": {
+                            "application\/json": {
+                                "schema": {
+                                    "$href": "#\/components\/schemas\/Combined"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Combined": {
+                "type": "object",
+                "properties": {
+                    "person": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "company": {
+                        "description": "",
+                        "type": ""
+                    }
+                }
+            },
+            "person": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "fuzzy": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "gender": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "location": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "timeZone": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "utcOffset": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "Geo": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "geo": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "bio": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "site": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "employment": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "facebook": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "github": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "twitter": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "linkedin": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "googleplus": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "angellist": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "aboutme": {
+                        "description": "",
+                        "type": "object"
+                    }
+                }
+            },
+            "company": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "legalName": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "domain": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "domainAliases": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "category": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "site": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "description": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "tags": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "foundedDate": {
+                        "description": "",
+                        "type": "date"
+                    },
+                    "location": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "timeZone": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "utcOffset": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "Geo": {
+                        "description": "",
+                        "type": "object"
+                    },
+                    "geo": {
+                        "description": "",
+                        "type": ""
+                    },
+                    "metrics": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "logo": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "emailProvider": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "tech": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "crunchbase": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "angellist": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "twitter": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "linkedin": {
+                        "description": "",
+                        "type": "array"
+                    },
+                    "facebook": {
+                        "description": "",
+                        "type": "array"
+                    }
+                }
+            },
+            "Geo": {
+                "type": "object",
+                "properties": {
+                    "streetNumber": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "streetName": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "subPremise": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "city": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "state": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "stateCode": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "countryCode": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "lat": {
+                        "description": "",
+                        "type": "float"
+                    },
+                    "lng": {
+                        "description": "",
+                        "type": "float"
+                    }
+                }
+            },
+            "name": {
+                "type": "object"
+            },
+            "employment": {
+                "type": "object"
+            },
+            "facebook": {
+                "type": "array"
+            },
+            "github": {
+                "type": "object"
+            },
+            "twitter": {
+                "type": "array"
+            },
+            "linkedin": {
+                "type": "array"
+            },
+            "googleplus": {
+                "type": "object"
+            },
+            "angellist": {
+                "type": "array"
+            },
+            "aboutme": {
+                "type": "object"
+            },
+            "domainAliases": {
+                "type": "array"
+            },
+            "category": {
+                "type": "object"
+            },
+            "site": {
+                "type": "object"
+            },
+            "tags": {
+                "type": "array"
+            },
+            "metrics": {
+                "type": "array"
+            },
+            "tech": {
+                "type": "array"
+            },
+            "crunchbase": {
+                "type": "array"
+            }
+        }
+    }
+}
