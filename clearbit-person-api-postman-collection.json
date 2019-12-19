@@ -1,0 +1,44 @@
+{
+    "id": "f53e829f3becab145eb2bd61cd0d8f96",
+    "name": "Clearbit Person API",
+    "description": null,
+    "auth": null,
+    "events": null,
+    "variables": [],
+    "order": [],
+    "folders_order": [],
+    "folders": [],
+    "requests": [
+        {
+            "id": "35fe2b9ffe24aed3426b130bd8f4f613",
+            "name": "Retrieves a person and company by email address",
+            "url": "http:\/\/person.clearbit.com\/v2\/combined\/find",
+            "description": "Retrieves a person and company by email address.",
+            "data": [],
+            "dataMode": "raw",
+            "headerData": null,
+            "method": "get",
+            "pathVariableData": [],
+            "queryParams": [
+                {
+                    "key": "email",
+                    "description": "the person's email address",
+                    "value": "",
+                    "equals": true,
+                    "enabled": true
+                }
+            ],
+            "auth": null,
+            "events": null,
+            "folder": null,
+            "protocolProfileBehavior": {
+                "disableBodyPruning": true
+            },
+            "responses": [],
+            "currentHelper": null,
+            "helperAttributes": null,
+            "collectionId": "f53e829f3becab145eb2bd61cd0d8f96",
+            "rawModeData": ""
+        }
+    ]
+}
