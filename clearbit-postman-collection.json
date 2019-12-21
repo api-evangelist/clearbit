@@ -1,5 +1,5 @@
 {
-    "id": "fe2b27f06a1d2399b7d1c753c85ed652",
+    "id": "79d68a3fd37fd1d3cd45b5b2f2d33549",
     "name": "Clearbit",
     "description": null,
     "auth": null,
@@ -10,7 +10,7 @@
     "folders": [],
     "requests": [
         {
-            "id": "a0dde37e8efae8cdce5c9db999a1ff28",
+            "id": "83478f23ca1cf2119908cae56a95ad4d",
             "name": "Find Contacts - Job Title",
             "url": "httpsdiscovery.clearbit.com\/v1\/companies\/search",
             "description": "TODO: Add Description",
@@ -51,11 +51,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "fe2b27f06a1d2399b7d1c753c85ed652",
+            "collectionId": "79d68a3fd37fd1d3cd45b5b2f2d33549",
             "rawModeData": ""
         },
         {
-            "id": "ab43c90d57493d2ac51f2f479ed8ab0e",
+            "id": "2809e915c271cb4b77406186c5a161b0",
             "name": "Domain Lookup",
             "url": "httpsdiscovery.clearbit.com\/v1\/companies\/v2\/companies\/find",
             "description": "TODO: Add Description",
@@ -82,11 +82,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "fe2b27f06a1d2399b7d1c753c85ed652",
+            "collectionId": "79d68a3fd37fd1d3cd45b5b2f2d33549",
             "rawModeData": ""
         },
         {
-            "id": "c4395d36aedc5582066280a43458b775",
+            "id": "3631d7f0639588871754a5f20697d9b8",
             "name": "Find Company by IP Address",
             "url": "httpsdiscovery.clearbit.com\/v1\/companies\/find",
             "description": "TODO: Add Description",
@@ -113,11 +113,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "fe2b27f06a1d2399b7d1c753c85ed652",
+            "collectionId": "79d68a3fd37fd1d3cd45b5b2f2d33549",
             "rawModeData": ""
         },
         {
-            "id": "3b4ebf628db696da8ca2e85bd642f2db",
+            "id": "c338752289cae6c832492e1374d4c962",
             "name": "Company Name to Domain",
             "url": "httpsdiscovery.clearbit.com\/v1\/companies\/v1\/domains\/find",
             "description": "TODO: Add Description",
@@ -144,11 +144,11 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "fe2b27f06a1d2399b7d1c753c85ed652",
+            "collectionId": "79d68a3fd37fd1d3cd45b5b2f2d33549",
             "rawModeData": ""
         },
         {
-            "id": "d3ab004e1b6cd78fb8a0fbaea6b67477",
+            "id": "62a325461da06561c2a1acd15fe3723c",
             "name": "By Name",
             "url": "httpsdiscovery.clearbit.com\/v1\/companies\/entities",
             "description": "TODO: Add Description",
@@ -175,7 +175,7 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "fe2b27f06a1d2399b7d1c753c85ed652",
+            "collectionId": "79d68a3fd37fd1d3cd45b5b2f2d33549",
             "rawModeData": ""
         }
     ]
