@@ -1,5 +1,5 @@
 {
-    "id": "f53e829f3becab145eb2bd61cd0d8f96",
+    "id": "ace8e200410431000a48f8ba08544ebb",
     "name": "Clearbit Person API",
     "description": null,
     "auth": null,
@@ -10,7 +10,7 @@
     "folders": [],
     "requests": [
         {
-            "id": "35fe2b9ffe24aed3426b130bd8f4f613",
+            "id": "30df831c3754f6685496526c15cae9e5",
             "name": "Retrieves a person and company by email address",
             "url": "http:\/\/person.clearbit.com\/v2\/combined\/find",
             "description": "Retrieves a person and company by email address.",
@@ -37,7 +37,7 @@
             "responses": [],
             "currentHelper": null,
             "helperAttributes": null,
-            "collectionId": "f53e829f3becab145eb2bd61cd0d8f96",
+            "collectionId": "ace8e200410431000a48f8ba08544ebb",
             "rawModeData": ""
         }
     ]
