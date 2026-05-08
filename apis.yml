@@ -1,0 +1,29 @@
+aid: clearbit
+url: https://raw.githubusercontent.com/api-evangelist/clearbit/refs/heads/main/apis.yml
+name: Clearbit
+x-type: company
+description: >-
+  Clearbit (now HubSpot Breeze Intelligence) is a B2B data enrichment platform offering company and contact enrichment, intent signals, and reveal APIs.
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - Sales Intelligence
+  - Enrichment
+  - B2B Data
+  - HubSpot
+  - Identity
+created: '2026-05-08'
+modified: '2026-05-08'
+specificationVersion: '0.19'
+apis: []
+common:
+  - type: Website
+    url: https://clearbit.com/
+  - type: Plans
+    url: plans/clearbit-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/clearbit-rate-limits.yml
+  - type: FinOps
+    url: finops/clearbit-finops.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
