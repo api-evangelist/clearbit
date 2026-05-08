@@ -1,41 +1,82 @@
 specification: API Commons Plans
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
-provider: Clearbit
+provider: Clearbit (HubSpot Breeze Intelligence)
 providerId: clearbit
 created: '2026-05-08'
 modified: '2026-05-08'
-reconciled: false
+reconciled: true
 tags:
 - Sales Intelligence
+- B2B
 - Enrichment
-- B2B Data
+- Reveal
 - HubSpot
-- Identity
+- Marketing
 - Plans
-description: Placeholder plans/pricing artifact for Clearbit. Replace with real published pricing once
-  the pipeline researches the provider's plans page.
-notes: Initial scaffold — plans/pricing have not yet been reconciled.
+description: >-
+  Clearbit was acquired by HubSpot in November 2023 and is being absorbed into HubSpot Breeze
+  Intelligence. Standalone Clearbit pricing has been deprecated; new customers buy Breeze Intelligence
+  credits as a HubSpot add-on. Existing Clearbit customers continue on legacy contracts but new self-
+  serve sign-up has been turned off. The Logo and Autocomplete APIs remain free and unauthenticated.
+notes: Acquired by HubSpot. New customers route through HubSpot Breeze Intelligence pricing. Logo and Autocomplete APIs remain free.
 sources:
 - https://clearbit.com/
+- https://www.hubspot.com/products/breeze-intelligence
+- https://clearbit.com/logo
 plans:
-- id: clearbit-default
-  name: To Be Reconciled
-  type: enterprise
-  description: Initial scaffold; replace with provider plan tiers once pricing is reconciled.
+- id: clearbit-free-utilities
+  name: Free Utilities (Logo, Autocomplete)
+  type: free
+  description: The Logo and Autocomplete APIs remain free, unauthenticated, and rate-limited.
   entries:
   - label: API Access
     name: api_access
     type: flat
-    metric: varies
+    metric: requests
     limit: -1
     timeFrame: usage
     geo: global
     unit: 1
-    price: see https://clearbit.com/
+    price: 0
     userMultiplied: false
   elements:
-  - name: Pending Reconciliation
+  - name: No auth
+  - name: Logo, Autocomplete only
+- id: breeze-intelligence
+  name: HubSpot Breeze Intelligence (replacement)
+  type: subscription
+  description: Sold as a credit-based HubSpot add-on; replaces legacy Clearbit enrichment/reveal/prospecting for new customers.
+  entries:
+  - label: Credits
+    name: credits
+    type: flat
+    metric: credit
+    limit: -1
+    timeFrame: monthly
+    geo: global
+    unit: 1
+    price: see https://www.hubspot.com/products/breeze-intelligence
+    userMultiplied: false
+  elements:
+  - name: Buy in credit packs as a HubSpot add-on
+- id: clearbit-legacy
+  name: Clearbit Legacy (Existing Customers)
+  type: enterprise
+  description: Legacy Clearbit subscriptions remain in force for existing customers; not available for new sign-up.
+  entries:
+  - label: Contract
+    name: contract
+    type: flat
+    metric: year
+    limit: -1
+    timeFrame: annual
+    geo: global
+    unit: 1
+    price: legacy
+    userMultiplied: false
+  elements:
+  - name: Enrichment, Reveal, Prospector
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

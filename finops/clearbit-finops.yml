@@ -1,24 +1,29 @@
 specification: FinOps Framework
 specificationVersion: '1.0'
 schema: https://www.finops.org/framework/
-provider: Clearbit
+provider: Clearbit (HubSpot Breeze Intelligence)
 providerId: clearbit
 created: '2026-05-08'
 modified: '2026-05-08'
-reconciled: false
+reconciled: true
 tags:
 - Sales Intelligence
+- B2B
 - Enrichment
-- B2B Data
+- Reveal
 - HubSpot
-- Identity
+- Marketing
 - FinOps
 - Cost Management
 - FOCUS
-description: FOCUS-aligned FinOps placeholder for Clearbit. Pipeline will replace with real billing details.
-notes: Initial scaffold — billing model has not yet been reconciled.
+description: >-
+  FOCUS-aligned FinOps profile for Clearbit. With HubSpot's acquisition, cost is consolidating onto
+  HubSpot's invoice as a Breeze Intelligence add-on (credit-based). Legacy Clearbit annual contracts
+  remain in force for existing customers. Optimize by tracking credit-per-enrichment, eliminating
+  duplicate vendors, and right-sizing the Breeze credit pack at renewal.
+notes: Migrating onto HubSpot invoice as Breeze Intelligence credits.
 sources:
-- https://clearbit.com/
+- https://www.hubspot.com/products/breeze-intelligence
 - https://focus.finops.org/focus-specification/v1-3/
 alignedWith:
   framework: FinOps Foundation Framework
@@ -26,41 +31,45 @@ alignedWith:
   dataSpec: FOCUS
   dataSpecVersion: '1.3'
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
-publisherName: Clearbit
+publisherName: HubSpot (Clearbit)
 serviceCategory: Sales Intelligence
 billingModel:
-  pricingCategory: To Be Reconciled
-  billingFrequency: Monthly
+  pricingCategory: Subscription + Credits
+  billingFrequency: Monthly / Annual
   billingCurrency: USD
   chargeCategories:
+  - Subscription
   - Usage
-  - Purchase
-  - Adjustment
 focusColumns:
-  ServiceName: Clearbit
+  ServiceName: Clearbit / Breeze Intelligence
   ServiceCategory: Sales Intelligence
-  ProviderName: Clearbit
-  PublisherName: Clearbit
-  InvoiceIssuerName: Clearbit
+  ProviderName: HubSpot
+  PublisherName: HubSpot
+  InvoiceIssuerName: HubSpot
   BillingCurrency: USD
-  ChargeCategory: Usage
+  ChargeCategory: Subscription
 meters:
-- name: api_usage
-  description: Catch-all meter pending reconciliation.
-  unit: varies
+- name: enrichment_credits
+  description: Credits consumed per enrichment call.
+  unit: credit
   aggregation: sum
   dimensions:
-  - account
-  - resource
+  - endpoint
+- name: reveal_lookups
+  description: Reveal IP lookups.
+  unit: lookup
+  aggregation: sum
+  dimensions:
+  - domain
 principles:
 - name: Visibility
-  description: Pull provider invoices or usage exports until a self-serve usage feed is documented.
+  description: Pull HubSpot Breeze Intelligence credit reports; reconcile with marketing automation usage.
 - name: Allocation
-  description: Tag invoice line items to consuming business units in your FinOps store.
+  description: Allocate credits to marketing-ops and revenue programs.
 - name: Optimization
-  description: Levers depend on the provider's billing model; review at renewal once reconciled.
+  description: Cache enrichments aggressively; consolidate vendors with overlap.
 - name: Accountability
-  description: Assign a contract owner to review billing against negotiated terms.
+  description: Marketing-Ops owns Breeze pack purchasing and renewal.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

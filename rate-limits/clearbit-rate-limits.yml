@@ -1,35 +1,52 @@
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
-provider: Clearbit
+provider: Clearbit (HubSpot Breeze Intelligence)
 providerId: clearbit
 created: '2026-05-08'
 modified: '2026-05-08'
 reconciled: false
 tags:
 - Sales Intelligence
+- B2B
 - Enrichment
-- B2B Data
+- Reveal
 - HubSpot
-- Identity
+- Marketing
 - Rate Limiting
 - Quotas
 - Throttling
-description: Placeholder rate-limit artifact for Clearbit. Replace with real limits once researched.
-notes: Initial scaffold — limits have not yet been reconciled.
+description: >-
+  Clearbit's paid APIs are rate-limited per API key with monthly quotas tied to the plan; documented
+  historical default was 600 requests/minute on Enrichment for paid plans. The free Logo and
+  Autocomplete APIs apply soft per-IP throttling. With the HubSpot transition, exact thresholds are
+  migrating to Breeze Intelligence and not consistently documented.
+notes: Historical default 600 RPM on Enrichment paid plans; Breeze migration changes exact thresholds.
 sources:
-- https://clearbit.com/
+- https://dashboard.clearbit.com/docs
 responseCodes:
   throttled: 429
 limits:
-- name: Default
+- name: Enrichment (paid, historical)
   scope: account
-  metric: varies
+  metric: requests
+  limit: 600/minute (historical)
+  notes: Legacy default; verify current via dashboard.
+- name: Reveal
+  scope: account
+  metric: requests
   limit: see provider documentation
-  notes: Pending reconciliation.
+  notes: Per-key limit.
+- name: Logo (free)
+  scope: ip
+  metric: requests
+  limit: soft, per-IP
+  notes: Used for branding utilities.
 policies:
 - name: Backoff Strategy
-  description: Clients should implement exponential backoff with jitter and honor any Retry-After header.
+  description: Honor 429 with Retry-After; cache responses where TOS allows.
+- name: Caching
+  description: Cache enrichment results for at least 24h to reduce credit/quota usage.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
