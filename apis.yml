@@ -1,7 +1,7 @@
 aid: clearbit
 url: https://raw.githubusercontent.com/api-evangelist/clearbit/refs/heads/main/apis.yml
 name: Clearbit (HubSpot Breeze Intelligence)
-x-type: company
+kind: company
 description: >-
   Clearbit was a B2B marketing and sales intelligence platform; HubSpot acquired it in late 2023 and
   has rebranded most capabilities as HubSpot Breeze Intelligence. Legacy Clearbit REST APIs
