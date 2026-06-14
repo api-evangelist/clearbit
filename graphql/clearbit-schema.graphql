@@ -1,0 +1,604 @@
+"""
+Clearbit GraphQL Schema
+Conceptual schema representing the Clearbit (HubSpot Breeze Intelligence) B2B data enrichment platform.
+Covers Person Enrichment, Company Enrichment, Combined Enrichment, Reveal, Prospector, Risk, and supporting types.
+"""
+
+# ─── Scalar Types ────────────────────────────────────────────────────────────
+
+scalar Date
+scalar DateTime
+scalar URL
+scalar Email
+scalar IP
+
+# ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum EmploymentSeniority {
+  EXECUTIVE
+  VP
+  DIRECTOR
+  MANAGER
+  SENIOR
+  MID
+  JUNIOR
+  INTERN
+  UNKNOWN
+}
+
+enum EmploymentSubRole {
+  ENGINEERING
+  PRODUCT
+  DESIGN
+  MARKETING
+  SALES
+  SUPPORT
+  FINANCE
+  LEGAL
+  HR
+  OPERATIONS
+  EXECUTIVE
+  EDUCATION
+  OTHER
+}
+
+enum TechCategory {
+  CRM
+  ANALYTICS
+  ADVERTISING
+  EMAIL
+  CLOUD
+  ECOMMERCE
+  CONTENT
+  SECURITY
+  DEVOPS
+  FINANCE
+  HR
+  SUPPORT
+  COLLABORATION
+  OTHER
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  VERY_HIGH
+  UNKNOWN
+}
+
+enum WebhookEvent {
+  PERSON_ENRICHED
+  COMPANY_ENRICHED
+  COMBINED_ENRICHED
+  REVEAL_MATCHED
+  RISK_SCORED
+}
+
+enum FoundedDecade {
+  BEFORE_1990
+  DECADE_1990S
+  DECADE_2000S
+  DECADE_2010S
+  DECADE_2020S
+}
+
+# ─── Person Types ─────────────────────────────────────────────────────────────
+
+"""Full name breakdown for a person."""
+type PersonName {
+  givenName: String
+  familyName: String
+  fullName: String
+}
+
+"""Email address record for a person."""
+type PersonEmail {
+  address: Email
+  verified: Boolean
+  type: String
+}
+
+"""Geographic location data associated with a person."""
+type PersonGeo {
+  city: String
+  state: String
+  stateCode: String
+  country: String
+  countryCode: String
+  lat: Float
+  lng: Float
+}
+
+"""Title and seniority of a person's employment."""
+type EmploymentTitle {
+  title: String
+  role: String
+  subRole: EmploymentSubRole
+  seniority: EmploymentSeniority
+}
+
+"""Current employment record for a person."""
+type PersonEmployment {
+  domain: String
+  name: String
+  title: EmploymentTitle
+  seniority: EmploymentSeniority
+  subRole: EmploymentSubRole
+  role: String
+  startDate: Date
+}
+
+"""LinkedIn social profile reference."""
+type LinkedInProfile {
+  handle: String
+  url: URL
+}
+
+"""Twitter social profile reference."""
+type TwitterProfile {
+  handle: String
+  id: String
+  url: URL
+  bio: String
+  site: URL
+  location: String
+  followers: Int
+  following: Int
+}
+
+"""GitHub social profile reference."""
+type GitHubProfile {
+  handle: String
+  id: String
+  url: URL
+  avatar: URL
+  company: String
+  blog: URL
+  followers: Int
+  following: Int
+}
+
+"""Aggregated social profiles for a person."""
+type SocialProfile {
+  linkedin: LinkedInProfile
+  twitter: TwitterProfile
+  github: GitHubProfile
+  aboutme: String
+  gravatar: String
+  klout: String
+  facebook: String
+}
+
+"""A short biography or description of the person."""
+type PersonBio {
+  text: String
+  source: URL
+}
+
+"""Avatar / profile image for a person."""
+type PersonAvatar {
+  url: URL
+}
+
+"""Core person record returned by Clearbit Person Enrichment."""
+type Person {
+  id: ID!
+  name: PersonName
+  email: PersonEmail
+  geo: PersonGeo
+  employment: PersonEmployment
+  social: SocialProfile
+  bio: PersonBio
+  avatar: PersonAvatar
+  site: URL
+  emailProvider: Boolean
+  indexedAt: DateTime
+}
+
+# ─── Company Types ────────────────────────────────────────────────────────────
+
+"""Primary domain of the company."""
+type CompanyDomain {
+  domain: String
+  tld: String
+}
+
+"""Company name variants."""
+type CompanyName {
+  name: String
+  aliases: [String]
+}
+
+"""Legal registered name of the company."""
+type CompanyLegalName {
+  legalName: String
+  jurisdiction: String
+}
+
+"""Textual description and tagline."""
+type CompanyDescription {
+  text: String
+  tagLine: String
+}
+
+"""Key business metrics for the company."""
+type CompanyMetrics {
+  alexaUsRank: Int
+  alexaGlobalRank: Int
+  googleRank: Int
+  annualRevenue: Float
+  estimatedAnnualRevenue: String
+  raised: Float
+  employees: Int
+  employeesRange: String
+  marketCap: Float
+}
+
+"""Geographic headquarters of the company."""
+type CompanyGeo {
+  streetNumber: String
+  streetName: String
+  subPremise: String
+  streetAddress: String
+  city: String
+  postalCode: String
+  state: String
+  stateCode: String
+  country: String
+  countryCode: String
+  lat: Float
+  lng: Float
+}
+
+"""Industry and sector classification."""
+type CompanyCategory {
+  sector: String
+  industryGroup: String
+  industry: String
+  subIndustry: String
+  sicCode: String
+  naicsCode: String
+}
+
+"""Tags / keyword labels for the company."""
+type CompanyTags {
+  tags: [String!]
+}
+
+"""Company phone contact."""
+type CompanyPhone {
+  number: String
+  type: String
+}
+
+"""Indicator of whether the company provides email hosting."""
+type CompanyEmailProvider {
+  isEmailProvider: Boolean
+}
+
+"""Website metadata for the company."""
+type CompanySite {
+  url: URL
+  title: String
+  h1: String
+  metaDescription: String
+  metaAuthor: String
+  phoneNumbers: [String]
+  emailAddresses: [Email]
+}
+
+"""A single technology used by the company."""
+type TechName {
+  name: String
+  tag: String
+  category: TechCategory
+}
+
+"""Category grouping of technologies."""
+type TechCategory_ {
+  name: TechCategory
+  technologies: [TechName]
+}
+
+"""Full technology stack detected for the company."""
+type TechStack {
+  technologies: [TechName]
+  categories: [TechCategory_]
+}
+
+"""A technology used by the company (flat reference)."""
+type CompanyTech {
+  name: String
+  tag: String
+  category: TechCategory
+}
+
+"""Social media presences for the company."""
+type CompanySocial {
+  twitter: String
+  linkedin: String
+  facebook: String
+  crunchbase: String
+  angellist: String
+  youtube: String
+  instagram: String
+}
+
+"""Total funding raised."""
+type CompanyFundingTotal {
+  value: Float
+  currency: String
+}
+
+"""A single funding round."""
+type CompanyFundingRound {
+  type: String
+  amount: Float
+  currency: String
+  raisedAt: Date
+  investors: [String]
+}
+
+"""IPO event data."""
+type CompanyIPO {
+  status: String
+  valuationAmount: Float
+  valuationCurrency: String
+  priceAmount: Float
+  priceCurrency: String
+  openedOn: Date
+  listedAt: Date
+  exchange: String
+  ticker: String
+}
+
+"""Year the company was founded."""
+type FoundedYear {
+  year: Int
+  decade: FoundedDecade
+}
+
+"""A notable person associated with the company."""
+type CompanyPeople {
+  name: String
+  title: String
+  linkedin: String
+  twitter: String
+  email: Email
+}
+
+"""Employee count and growth metrics."""
+type CompanyEmployeeCount {
+  count: Int
+  range: String
+}
+
+"""Employee growth rate data."""
+type EmployeeGrowth {
+  oneYear: Float
+  twoYear: Float
+  sixMonth: Float
+  threeMonth: Float
+}
+
+"""Core company record returned by Clearbit Company Enrichment."""
+type Company {
+  id: ID!
+  name: CompanyName
+  legalName: CompanyLegalName
+  domain: CompanyDomain
+  description: CompanyDescription
+  foundedYear: FoundedYear
+  location: String
+  geo: CompanyGeo
+  logo: URL
+  category: CompanyCategory
+  tags: CompanyTags
+  url: URL
+  site: CompanySite
+  metrics: CompanyMetrics
+  phone: CompanyPhone
+  emailProvider: CompanyEmailProvider
+  tech: [CompanyTech]
+  techStack: TechStack
+  social: CompanySocial
+  funding: CompanyFundingTotal
+  fundingRounds: [CompanyFundingRound]
+  ipo: CompanyIPO
+  employees: CompanyEmployeeCount
+  employeeGrowth: EmployeeGrowth
+  people: [CompanyPeople]
+  parentDomain: String
+  ultimateParentDomain: String
+  indexedAt: DateTime
+}
+
+# ─── Enrichment / Product Types ───────────────────────────────────────────────
+
+"""Result of a person-only enrichment lookup."""
+type PersonEnrichment {
+  person: Person
+  fuzzy: Boolean
+  status: Int
+  requestId: ID
+}
+
+"""Result of a company-only enrichment lookup."""
+type CompanyEnrichment {
+  company: Company
+  status: Int
+  requestId: ID
+}
+
+"""Combined person + company enrichment result."""
+type CombinedEnrichment {
+  person: Person
+  company: Company
+  requestId: ID
+}
+
+"""Generic enrichment wrapper (streaming / webhook)."""
+type Enrichment {
+  id: ID!
+  type: String
+  person: Person
+  company: Company
+  status: Int
+  requestId: ID
+  createdAt: DateTime
+}
+
+"""A single person returned by the Prospector API."""
+type ProspectorResult {
+  id: ID!
+  name: PersonName
+  title: EmploymentTitle
+  email: Email
+  employment: PersonEmployment
+  linkedin: LinkedInProfile
+  phone: String
+  verified: Boolean
+}
+
+"""Company + metadata returned by the Reveal API for an IP."""
+type RevealResult {
+  ip: IP
+  fuzzy: Boolean
+  domain: String
+  company: Company
+  requestId: ID
+}
+
+"""Risk scoring result for a given email address."""
+type RiskResult {
+  email: Email
+  score: Float
+  level: RiskLevel
+  suspicious: Boolean
+  spam: Boolean
+  disposable: Boolean
+  freeEmail: Boolean
+  deliverable: Boolean
+  acceptAll: Boolean
+  requestId: ID
+}
+
+"""Company discovered via the Discovery API."""
+type DiscoverResult {
+  id: ID!
+  company: Company
+  score: Float
+}
+
+"""Email address verification result."""
+type EmailVerification {
+  email: Email
+  verified: Boolean
+  deliverable: Boolean
+  disposable: Boolean
+  freeEmail: Boolean
+  acceptAll: Boolean
+  mxRecords: [String]
+  smtp: Boolean
+  requestId: ID
+}
+
+# ─── Auth / Config Types ───────────────────────────────────────────────────────
+
+"""API key credential for authenticating Clearbit requests."""
+type APIKey {
+  key: String!
+  label: String
+  createdAt: DateTime
+  lastUsedAt: DateTime
+  permissions: [String]
+}
+
+"""Webhook subscription configuration."""
+type Webhook {
+  id: ID!
+  url: URL!
+  events: [WebhookEvent!]
+  secret: String
+  active: Boolean
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+# ─── Queries ──────────────────────────────────────────────────────────────────
+
+type Query {
+  """Enrich a person by email address."""
+  enrichPerson(email: Email!): PersonEnrichment
+
+  """Enrich a company by domain."""
+  enrichCompany(domain: String!): CompanyEnrichment
+
+  """Enrich both person and company in a single call."""
+  enrichCombined(email: Email!): CombinedEnrichment
+
+  """Reveal the company behind an IP address."""
+  reveal(ip: IP!): RevealResult
+
+  """Search for people matching given filters."""
+  prospectPeople(
+    domain: String
+    role: String
+    seniority: EmploymentSeniority
+    title: String
+    city: String
+    state: String
+    country: String
+    page: Int
+    pageSize: Int
+  ): [ProspectorResult]
+
+  """Score the risk of an email address."""
+  riskScore(email: Email!): RiskResult
+
+  """Discover companies matching firmographic criteria."""
+  discoverCompanies(
+    query: String
+    industry: String
+    minEmployees: Int
+    maxEmployees: Int
+    country: String
+    page: Int
+    pageSize: Int
+  ): [DiscoverResult]
+
+  """Verify whether an email is deliverable."""
+  verifyEmail(email: Email!): EmailVerification
+
+  """Return the logo URL for a domain."""
+  logo(domain: String!, size: Int, format: String): URL
+
+  """Autocomplete company name to domain candidates."""
+  autocomplete(name: String!): [Company]
+
+  """List configured webhooks."""
+  webhooks: [Webhook]
+
+  """Get a single webhook by ID."""
+  webhook(id: ID!): Webhook
+
+  """List API keys for the account."""
+  apiKeys: [APIKey]
+}
+
+# ─── Mutations ────────────────────────────────────────────────────────────────
+
+type Mutation {
+  """Create a new webhook subscription."""
+  createWebhook(url: URL!, events: [WebhookEvent!]!, secret: String): Webhook
+
+  """Update an existing webhook."""
+  updateWebhook(id: ID!, url: URL, events: [WebhookEvent!], active: Boolean): Webhook
+
+  """Delete a webhook."""
+  deleteWebhook(id: ID!): Boolean
+
+  """Trigger an async enrichment (streaming / webhook delivery)."""
+  triggerEnrichment(email: Email!, webhook: URL): Enrichment
+}

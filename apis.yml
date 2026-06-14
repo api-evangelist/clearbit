@@ -2,102 +2,101 @@ aid: clearbit
 url: https://raw.githubusercontent.com/api-evangelist/clearbit/refs/heads/main/apis.yml
 name: Clearbit (HubSpot Breeze Intelligence)
 kind: company
-description: >-
-  Clearbit was a B2B marketing and sales intelligence platform; HubSpot acquired it in late 2023 and
-  has rebranded most capabilities as HubSpot Breeze Intelligence. Legacy Clearbit REST APIs
-  (Enrichment, Reveal, Prospector, Discovery, Risk, Logo, NameToDomain) were widely used; new sign-ups
-  are now redirected into HubSpot's product surface, and standalone Clearbit APIs are being sunset for
-  new customers.
+description: Clearbit was a B2B marketing and sales intelligence platform; HubSpot
+  acquired it in late 2023 and has rebranded most capabilities as HubSpot Breeze Intelligence.
+  Legacy Clearbit REST APIs (Enrichment, Reveal, Prospector, Discovery, Risk, Logo,
+  NameToDomain) were widely used; new sign-ups are now redirected into HubSpot's product
+  surface, and standalone Clearbit APIs are being sunset for new customers.
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 tags:
-  - Sales Intelligence
-  - B2B
-  - Enrichment
-  - Reveal
-  - HubSpot
-  - Marketing
+- Sales Intelligence
+- B2B
+- Enrichment
+- Reveal
+- HubSpot
+- Marketing
 created: '2026-05-08'
 modified: '2026-05-08'
 specificationVersion: '0.19'
 apis:
-  - aid: clearbit:enrichment
-    name: Clearbit Enrichment API
-    description: >-
-      Person and Company enrichment given an email or domain. Returns firmographic, technographic, and
-      persona data. Endpoints: /person, /company, /combined.
-    humanURL: https://dashboard.clearbit.com/docs
-    baseURL: https://person.clearbit.com
-    tags:
-      - Enrichment
-      - Person
-      - Company
-    properties:
-      - type: Documentation
-        url: https://dashboard.clearbit.com/docs
-  - aid: clearbit:reveal
-    name: Clearbit Reveal API
-    description: >-
-      De-anonymizes website visitors by IP address, returning company firmographics for B2B traffic.
-    humanURL: https://dashboard.clearbit.com/docs#reveal-api
-    baseURL: https://reveal.clearbit.com
-    tags:
-      - Reveal
-      - IP
-      - Company
-    properties:
-      - type: Documentation
-        url: https://dashboard.clearbit.com/docs#reveal-api
-  - aid: clearbit:prospector
-    name: Clearbit Prospector API
-    description: >-
-      Search for people and companies matching firmographic and persona filters.
-    humanURL: https://dashboard.clearbit.com/docs#prospector-api
-    baseURL: https://prospector.clearbit.com
-    tags:
-      - Prospecting
-      - Search
-    properties:
-      - type: Documentation
-        url: https://dashboard.clearbit.com/docs#prospector-api
-  - aid: clearbit:logo
-    name: Clearbit Logo API
-    description: >-
-      Free Logo API: returns a company logo image given a domain. No auth required.
-    humanURL: https://clearbit.com/logo
-    baseURL: https://logo.clearbit.com
-    tags:
-      - Logos
-      - Free
-    properties:
-      - type: Documentation
-        url: https://clearbit.com/logo
-  - aid: clearbit:name-to-domain
-    name: Clearbit Autocomplete (Name-to-Domain) API
-    description: >-
-      Free Autocomplete API: returns company candidates (name, domain, logo) for a name fragment.
-    humanURL: https://clearbit.com/blog/logo
-    baseURL: https://autocomplete.clearbit.com
-    tags:
-      - Autocomplete
-      - Free
-    properties:
-      - type: Documentation
-        url: https://clearbit.com/blog/logo
-common:
-  - type: GitHubOrganization
-    url: https://github.com/clearbit
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/clearbit
-  - type: Website
-    url: https://clearbit.com/
-  - type: DeveloperPortal
+- aid: clearbit:enrichment
+  name: Clearbit Enrichment API
+  description: 'Person and Company enrichment given an email or domain. Returns firmographic,
+    technographic, and persona data. Endpoints: /person, /company, /combined.'
+  humanURL: https://dashboard.clearbit.com/docs
+  baseURL: https://person.clearbit.com
+  tags:
+  - Enrichment
+  - Person
+  - Company
+  properties:
+  - type: Documentation
     url: https://dashboard.clearbit.com/docs
-  - type: Plans
-    url: plans/clearbit-plans-pricing.yml
-  - type: RateLimits
-    url: rate-limits/clearbit-rate-limits.yml
-  - type: FinOps
-    url: finops/clearbit-finops.yml
+  - url: graphql/clearbit-graphql.md
+    type: GraphQL
+- aid: clearbit:reveal
+  name: Clearbit Reveal API
+  description: De-anonymizes website visitors by IP address, returning company firmographics
+    for B2B traffic.
+  humanURL: https://dashboard.clearbit.com/docs#reveal-api
+  baseURL: https://reveal.clearbit.com
+  tags:
+  - Reveal
+  - IP
+  - Company
+  properties:
+  - type: Documentation
+    url: https://dashboard.clearbit.com/docs#reveal-api
+- aid: clearbit:prospector
+  name: Clearbit Prospector API
+  description: Search for people and companies matching firmographic and persona filters.
+  humanURL: https://dashboard.clearbit.com/docs#prospector-api
+  baseURL: https://prospector.clearbit.com
+  tags:
+  - Prospecting
+  - Search
+  properties:
+  - type: Documentation
+    url: https://dashboard.clearbit.com/docs#prospector-api
+- aid: clearbit:logo
+  name: Clearbit Logo API
+  description: 'Free Logo API: returns a company logo image given a domain. No auth
+    required.'
+  humanURL: https://clearbit.com/logo
+  baseURL: https://logo.clearbit.com
+  tags:
+  - Logos
+  - Free
+  properties:
+  - type: Documentation
+    url: https://clearbit.com/logo
+- aid: clearbit:name-to-domain
+  name: Clearbit Autocomplete (Name-to-Domain) API
+  description: 'Free Autocomplete API: returns company candidates (name, domain, logo)
+    for a name fragment.'
+  humanURL: https://clearbit.com/blog/logo
+  baseURL: https://autocomplete.clearbit.com
+  tags:
+  - Autocomplete
+  - Free
+  properties:
+  - type: Documentation
+    url: https://clearbit.com/blog/logo
+common:
+- type: GitHubOrganization
+  url: https://github.com/clearbit
+- type: LinkedIn
+  url: https://www.linkedin.com/company/clearbit
+- type: Website
+  url: https://clearbit.com/
+- type: DeveloperPortal
+  url: https://dashboard.clearbit.com/docs
+- type: Plans
+  url: plans/clearbit-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/clearbit-rate-limits.yml
+- type: FinOps
+  url: finops/clearbit-finops.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
