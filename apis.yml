@@ -7,7 +7,7 @@ description: Clearbit was a B2B marketing and sales intelligence platform; HubSp
   Legacy Clearbit REST APIs (Enrichment, Reveal, Prospector, Discovery, Risk, Logo,
   NameToDomain) were widely used; new sign-ups are now redirected into HubSpot's product
   surface, and standalone Clearbit APIs are being sunset for new customers.
-image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
 - Sales Intelligence
 - B2B
