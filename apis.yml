@@ -83,6 +83,10 @@ apis:
   - type: Documentation
     url: https://clearbit.com/blog/logo
 common:
+- type: TrustCenter
+  url: security/clearbit-trust-center.yml
+- type: DomainSecurity
+  url: security/clearbit-domain-security.yml
 - type: GitHubOrganization
   url: https://github.com/clearbit
 - type: LinkedIn
@@ -97,6 +101,8 @@ common:
   url: rate-limits/clearbit-rate-limits.yml
 - type: FinOps
   url: finops/clearbit-finops.yml
+- url: https://clearbit-blog.ghost.io/rss/
+  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
