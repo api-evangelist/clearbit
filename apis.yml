@@ -2,23 +2,34 @@ aid: clearbit
 url: https://raw.githubusercontent.com/api-evangelist/clearbit/refs/heads/main/apis.yml
 name: Clearbit (HubSpot Breeze Intelligence)
 kind: company
-description: Clearbit was a B2B marketing and sales intelligence platform; HubSpot
-  acquired it in late 2023 and has rebranded most capabilities as HubSpot Breeze Intelligence.
-  Legacy Clearbit REST APIs (Enrichment, Reveal, Prospector, Discovery, Risk, Logo,
-  NameToDomain) were widely used; new sign-ups are now redirected into HubSpot's product
-  surface, and standalone Clearbit APIs are being sunset for new customers.
+description: >-
+  Clearbit is a B2B marketing and sales intelligence platform whose REST APIs resolve an email
+  address to a person, a domain to a company, and an IP address to the business behind it,
+  returning firmographic, technographic and persona data across a documented 100+ company and 60+
+  person attributes classified against GICS, SIC and NAICS. HubSpot acquired Clearbit in December
+  2023 and sells the capability as HubSpot Breeze Intelligence. The legacy Clearbit APIs
+  (Enrichment, Streaming, Reveal, Prospector, Discovery, Risk, Name-to-Domain, Autocomplete)
+  remain live and answer on their production hosts, but the provider is in publicly dated
+  wind-down — new API keys have not been issued since 2023, free accounts were sunset 2025-04-30,
+  and the free Logo API was sunset 2025-12-08 and its host no longer resolves. Only the free
+  Autocomplete API is callable without a credential.
 accessModel:
   pricing: free
-  onboarding: unknown
+  onboarding: closed
   trial: false
-  try_now: false
+  try_now: true
   public: false
   label: Free
-  confidence: medium
+  confidence: high
   source:
   - plans
-  generated: '2026-07-22'
-  method: derived
+  - probe
+  generated: '2026-08-13'
+  method: probed
+  note: >-
+    try_now is true only because the Autocomplete API answers anonymously (HTTP 200 verified
+    2026-08-13). onboarding is closed — Clearbit does not issue API keys to accounts created
+    after 2023.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/clearbit.png
 tags:
 - Sales Intelligence
@@ -27,14 +38,20 @@ tags:
 - Reveal
 - HubSpot
 - Marketing
+- Data
+- Firmographics
+- Lead Enrichment
+- Company Data
 created: '2026-05-08'
-modified: '2026-05-08'
+modified: '2026-08-13'
 specificationVersion: '0.19'
 apis:
 - aid: clearbit:enrichment
-  name: Clearbit Enrichment API
-  description: 'Person and Company enrichment given an email or domain. Returns firmographic,
-    technographic, and persona data. Endpoints: /person, /company, /combined.'
+  name: Clearbit Person Enrichment API
+  description: 'Person enrichment from an email address, plus the Combined lookup that returns
+    the person and their company in one response. Endpoints: /v2/people/find, /v2/combined/find.
+    Verified live 2026-08-13 (HTTP 401 auth_required, x-api-version 2019-12-19). May return 202
+    when the record is not warm in the index.'
   humanURL: https://dashboard.clearbit.com/docs
   baseURL: https://person.clearbit.com
   tags:
@@ -44,12 +61,64 @@ apis:
   properties:
   - type: Documentation
     url: https://dashboard.clearbit.com/docs
-  - url: graphql/clearbit-graphql.md
-    type: GraphQL
+  - type: APIReference
+    url: https://clearbit.com/attributes
+  - type: Authentication
+    url: authentication/clearbit-authentication.yml
+  - type: Conventions
+    url: conventions/clearbit-conventions.yml
+  - type: ErrorCatalog
+    url: errors/clearbit-problem-types.yml
+  - type: DataModel
+    url: data-model/clearbit-data-model.yml
+  - type: RateLimits
+    url: rate-limits/clearbit-rate-limits.yml
+- aid: clearbit:company-enrichment
+  name: Clearbit Company Enrichment API
+  description: 'Company enrichment from a domain, and the Name to Domain lookup that resolves a
+    company name to its primary domain. Endpoints: /v2/companies/find, /v1/domains/find. Verified
+    live 2026-08-13 (HTTP 401 auth_required, x-api-version 2019-12-19, x-ratelimit-* headers
+    present). Name to Domain is documented by the provider as a free legacy product that is
+    unsupported.'
+  humanURL: https://dashboard.clearbit.com/docs
+  baseURL: https://company.clearbit.com
+  tags:
+  - Enrichment
+  - Company
+  - Firmographics
+  - Name to Domain
+  properties:
+  - type: Documentation
+    url: https://dashboard.clearbit.com/docs
+  - type: APIReference
+    url: https://clearbit.com/attributes
+  - type: Authentication
+    url: authentication/clearbit-authentication.yml
+  - type: DataModel
+    url: data-model/clearbit-data-model.yml
+- aid: clearbit:enrichment-streaming
+  name: Clearbit Streaming Enrichment API
+  description: The same enrichment contract served from a streaming host that holds the connection
+    open for up to 60 seconds so a queued (202) lookup resolves in-band. The provider warns it
+    "leads to slow Enrichment results" and excludes it from the documented 600 requests/minute
+    limit. Verified live 2026-08-13 (HTTP 401 auth_required, x-api-version 2019-12-19).
+  humanURL: https://help.clearbit.com/hc/en-us/articles/10065050209815-What-is-a-202-Status-Code
+  baseURL: https://person-stream.clearbit.com
+  tags:
+  - Enrichment
+  - Streaming
+  - Long Polling
+  properties:
+  - type: Documentation
+    url: https://help.clearbit.com/hc/en-us/articles/10065050209815-What-is-a-202-Status-Code
+  - type: Conventions
+    url: conventions/clearbit-conventions.yml
 - aid: clearbit:reveal
   name: Clearbit Reveal API
-  description: De-anonymizes website visitors by IP address, returning company firmographics
-    for B2B traffic.
+  description: De-anonymizes website visitors by IP address, returning company firmographics for
+    B2B traffic. Endpoint /v1/companies/find?ip=. Verified live 2026-08-13 (HTTP 401
+    auth_required). Explicitly excluded from the documented 600 requests/minute limit, and emits
+    no rate-limit headers, so its budget is neither documented nor observable.
   humanURL: https://dashboard.clearbit.com/docs#reveal-api
   baseURL: https://reveal.clearbit.com
   tags:
@@ -59,62 +128,267 @@ apis:
   properties:
   - type: Documentation
     url: https://dashboard.clearbit.com/docs#reveal-api
+  - type: Authentication
+    url: authentication/clearbit-authentication.yml
 - aid: clearbit:prospector
   name: Clearbit Prospector API
-  description: Search for people and companies matching firmographic and persona filters.
+  description: 'Search for people matching firmographic and persona filters. Endpoint
+    /v1/people/search. Verified live 2026-08-13 (HTTP 401 auth_required, x-api-version 2018-11-16,
+    x-ratelimit-* headers present). Supports role/subRole search, location parameters and
+    pagination.'
   humanURL: https://dashboard.clearbit.com/docs#prospector-api
   baseURL: https://prospector.clearbit.com
   tags:
   - Prospecting
   - Search
+  - People
   properties:
   - type: Documentation
     url: https://dashboard.clearbit.com/docs#prospector-api
+  - type: Authentication
+    url: authentication/clearbit-authentication.yml
+- aid: clearbit:discovery
+  name: Clearbit Discovery API
+  description: Search Clearbit's company database with a structured query to build target-market
+    lists. Endpoint /v1/companies/search. Verified live 2026-08-13 (HTTP 401 auth_required). No
+    published rate limit and no rate-limit headers on response.
+  humanURL: https://dashboard.clearbit.com/docs
+  baseURL: https://discovery.clearbit.com
+  tags:
+  - Discovery
+  - Search
+  - Company
+  - Target Market
+  properties:
+  - type: Documentation
+    url: https://dashboard.clearbit.com/docs
+  - type: Authentication
+    url: authentication/clearbit-authentication.yml
+- aid: clearbit:risk
+  name: Clearbit Risk API
+  description: Scores an email address for fraud and abuse risk. Endpoint /v1/calculate?email=.
+    Verified live 2026-08-13 (HTTP 401 auth_required, x-api-version 2016-05-03 — the oldest dated
+    version on the estate). Documented by the provider as a free legacy product available only to
+    existing customers and "unsupported at this time".
+  humanURL: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+  baseURL: https://risk.clearbit.com
+  tags:
+  - Risk
+  - Fraud
+  - Email
+  - Legacy
+  properties:
+  - type: Documentation
+    url: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+  - type: Lifecycle
+    url: lifecycle/clearbit-lifecycle.yml
+- aid: clearbit:name-to-domain
+  name: Clearbit Autocomplete API
+  description: 'Free, unauthenticated company autocomplete: returns candidate companies (name,
+    domain, logo) for a name fragment. Endpoint /v1/companies/suggest?query=. The only Clearbit
+    endpoint that answers an anonymous caller — verified live 2026-08-13, HTTP 200, CORS-enabled,
+    CloudFront-cached. The logo field has returned null since 2025-09-09 ahead of the Logo API
+    sunset. The separate authenticated Name to Domain endpoint lives on company.clearbit.com.'
+  humanURL: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+  baseURL: https://autocomplete.clearbit.com
+  tags:
+  - Autocomplete
+  - Free
+  - Company
+  - Name to Domain
+  properties:
+  - type: Documentation
+    url: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+  - type: RateLimits
+    url: rate-limits/clearbit-rate-limits.yml
+  - type: Plans
+    url: plans/clearbit-plans-pricing.yml
 - aid: clearbit:logo
-  name: Clearbit Logo API
-  description: 'Free Logo API: returns a company logo image given a domain. No auth
-    required.'
+  name: Clearbit Logo API (retired)
+  description: 'RETIRED 2025-12-08. The free Logo API returned a company logo image for a domain
+    with no authentication. Announced 2025-02-13, moved to 2025-12-01, then final on 2025-12-08
+    after a deliberate 24-hour warning outage on 2025-11-12. Verified 2026-08-13: logo.clearbit.com
+    no longer resolves (NXDOMAIN) — callers get a DNS failure, not a documented 410. Logos remain
+    available to paying customers via the Company Enrichment API logo attribute; Clearbit
+    recommends Logo.dev as the public alternative.'
   humanURL: https://clearbit.com/logo
   baseURL: https://logo.clearbit.com
   tags:
   - Logos
   - Free
+  - Retired
   properties:
   - type: Documentation
     url: https://clearbit.com/logo
-- aid: clearbit:name-to-domain
-  name: Clearbit Autocomplete (Name-to-Domain) API
-  description: 'Free Autocomplete API: returns company candidates (name, domain, logo)
-    for a name fragment.'
-  humanURL: https://clearbit.com/blog/logo
-  baseURL: https://autocomplete.clearbit.com
-  tags:
-  - Autocomplete
-  - Free
-  properties:
-  - type: Documentation
-    url: https://clearbit.com/blog/logo
+  - type: Deprecation
+    url: https://clearbit.com/changelog
+  - type: Lifecycle
+    url: lifecycle/clearbit-lifecycle.yml
 common:
-- type: TrustCenter
-  url: security/clearbit-trust-center.yml
-- type: DomainSecurity
-  url: security/clearbit-domain-security.yml
-- type: GitHubOrganization
-  url: https://github.com/clearbit
-- type: LinkedIn
-  url: https://www.linkedin.com/company/clearbit
 - type: Website
   url: https://clearbit.com/
 - type: DeveloperPortal
   url: https://dashboard.clearbit.com/docs
+- type: Documentation
+  url: https://help.clearbit.com/
+- type: APIReference
+  url: https://clearbit.com/attributes
+- type: Support
+  url: https://help.clearbit.com/
+- type: Blog
+  url: https://clearbit-blog.ghost.io/rss/
+- type: GitHubOrganization
+  url: https://github.com/clearbit
+- type: LinkedIn
+  url: https://www.linkedin.com/company/clearbit
+- type: Pricing
+  url: https://clearbit.com/pricing
+- type: Login
+  url: https://clearbit.com/login
+- type: TermsOfService
+  url: https://clearbit.com/legal
+- type: PrivacyPolicy
+  url: https://clearbit.com/privacy-policy
+- type: Compliance
+  url: https://clearbit.com/trust#compliance
+- type: TrustCenter
+  url: security/clearbit-trust-center.yml
+- type: Security
+  url: security/clearbit-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/clearbit-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/clearbit-domain-security.yml
+- type: Authentication
+  url: authentication/clearbit-authentication.yml
+- type: Conventions
+  url: conventions/clearbit-conventions.yml
+- type: ErrorCatalog
+  url: errors/clearbit-problem-types.yml
+- type: DataModel
+  url: data-model/clearbit-data-model.yml
+- type: Conformance
+  url: conformance/clearbit-conformance.yml
+- type: Lifecycle
+  url: lifecycle/clearbit-lifecycle.yml
+- type: StatusPage
+  url: https://status.clearbit.com/
+- type: Deprecation
+  url: https://clearbit.com/changelog
+- type: ChangeLog
+  url: changelog/clearbit-changelog.yml
+- type: Webhooks
+  url: asyncapi/clearbit-webhooks.yml
+- type: Packages
+  url: packages/clearbit-packages.yml
+- type: SDKs
+  url: packages/clearbit-packages.yml
+- type: Components
+  url: components/clearbit-components.yml
+- type: LLMsTxt
+  url: llms/clearbit-llms.txt
 - type: Plans
   url: plans/clearbit-plans-pricing.yml
 - type: RateLimits
   url: rate-limits/clearbit-rate-limits.yml
 - type: FinOps
   url: finops/clearbit-finops.yml
-- url: https://clearbit-blog.ghost.io/rss/
-  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-pointers-deliberately-absent:
+  note: >-
+    Recorded so a later round does not "fix" these by adding a pointer the provider has not
+    earned. Each was probed on 2026-08-13 and missed.
+  MCPServer: >-
+    No first-party MCP server. mcp/clearbit-mcp.yml is a derived candidate with deployment.mode
+    none. The Zapier / viaSocket / Apify Clearbit MCP listings are third-party wrappers.
+  AgentCard: >-
+    /.well-known/agent-card.json and /.well-known/agent.json returned 404 on all eight hosts.
+  WellKnown: >-
+    44 well-known paths probed across 8 hosts, zero hits. well-known/clearbit-well-known.yml
+    records the absence.
+  SecurityTxt: /.well-known/security.txt 404 on every host.
+  Idempotency: >-
+    No idempotency key, replay semantics or retention window is documented anywhere. Conventions
+    records the absence explicitly.
+  AgentSkill: >-
+    No OpenAPI exists to ground real operationIds in, so no skill can be written without
+    inventing operation identifiers.
+  OpenAPI: >-
+    No spec at any probed location on any host. See x-coverage.
+  AsyncAPI: >-
+    /asyncapi.yaml and /asyncapi.json 404 on every host. Two webhook surfaces are documented in
+    prose only and carry the Webhooks pointer instead.
+  GraphQL: >-
+    REMOVED this round. The prior pointer at graphql/clearbit-graphql.md asserted a GraphQL API;
+    that file is an API Evangelist conceptual translation of the REST surface, not a provider
+    endpoint. A real but undocumented, fully auth-gated GraphQL endpoint was found behind the
+    dashboard at https://app.clearbit.com/graphql and is recorded in
+    graphql/clearbit-graphql-endpoint-probe.yml — it is not a published product and is not wired.
+  Sandbox: No sandbox, test mode or test credentials are published.
+  CLI: No first-party CLI in the github.com/clearbit organization or the docs.
+  Postman: No first-party Clearbit-owned public Postman workspace or collection found.
+  Roadmap: No public roadmap.
+  SignUp: >-
+    Login is wired instead. Sign-up for API access is closed — no new API keys since 2023 and free
+    accounts sunset 2025-04-30.
+x-coverage:
+  state: covered
+  detail: >-
+    Enriched. Fifteen new artifacts plus four upgraded were searched, probed or derived from Clearbit's own published
+    surfaces — the release notes, the Zendesk help centre, the attribute reference, the trust page,
+    the public package registries, and live probes of all nine API hosts.
+  checked: '2026-08-13'
+x-contract-discovery:
+  note: >-
+    Recorded separately from x-coverage because the profile is NOT thin — it is thick, but no
+    machine-readable contract exists behind it. STEP 0b was run in full before concluding this.
+  machine_readable_spec: none
+  detail: >-
+    Clearbit's API reference at dashboard.clearbit.com/docs is a client-rendered React shell; its
+    31 lazy-loaded chunks were downloaded from cdn.clearbit.com and searched and contain no
+    reference content. No OpenAPI, Swagger or AsyncAPI answers at any probed path on any of the
+    nine live hosts. The ten APIs that answer on the wire have no published contract behind them.
+  probed:
+  - path_set: [/openapi.json, /openapi.yaml, /swagger.json, /v1/openapi.json, /api-docs, /redoc]
+    hosts: 10
+    hits: 0
+    note: >-
+      app.clearbit.com returned HTTP 200 for every one of these — an SPA catch-all serving HTML,
+      rejected as a false positive rather than saved.
+  - path_set: [/asyncapi.yaml, /asyncapi.json]
+    hosts: 4
+    hits: 0
+  - path_set: [/.well-known/* (7 paths)]
+    hosts: 8
+    hits: 0
+  - path_set: [/graphql]
+    hosts: 3
+    hits: 1
+    note: >-
+      app.clearbit.com/graphql is real but auth-gated and undocumented. See
+      graphql/clearbit-graphql-endpoint-probe.yml.
+  evidence:
+  - url: https://dashboard.clearbit.com/docs
+    status: 200
+  - url: https://person.clearbit.com/openapi.json
+    status: 404
+  - url: https://person.clearbit.com/swagger.json
+    status: 404
+  - url: https://clearbit.com/openapi.json
+    status: 404
+  - url: https://person.clearbit.com/asyncapi.yaml
+    status: 404
+  - url: https://clearbit.com/.well-known/agent-card.json
+    status: 404
+  - url: https://app.clearbit.com/graphql
+    status: 401
+  - url: https://logo.clearbit.com/clearbit.com
+    status: 0
+  checked: '2026-08-13'
+x-enrichment:
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 15
+  pass: local-v1
