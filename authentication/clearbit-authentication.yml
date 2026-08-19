@@ -1,0 +1,89 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://help.clearbit.com/hc/en-us/articles/6045527495191-How-Do-I-Access-My-Clearbit-API-Key
+  plus live 401 probes of person/company/reveal/prospector/risk/discovery.clearbit.com on 2026-08-13
+docs: https://help.clearbit.com/hc/en-us/articles/6045527495191-How-Do-I-Access-My-Clearbit-API-Key
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+description: >-
+  Clearbit authenticates with a single long-lived Secret API key scoped to the account, presented
+  either as HTTP Basic (key as the username, empty password) or as an RFC 6750 Bearer token. There
+  is no OAuth 2.0 authorization server, no OIDC discovery document, no scopes and no per-endpoint
+  permission model — every key carries the full entitlement of its account's plan. Key issuance is
+  now closed: Clearbit's own help centre states API keys are available only for accounts created
+  in 2023 and earlier, so the authentication surface is live but unobtainable for new integrators.
+schemes:
+- name: SecretApiKeyBasic
+  type: http
+  scheme: basic
+  in: header
+  header: Authorization
+  description: >-
+    API key supplied as the HTTP Basic username with an empty password
+    (Authorization: Basic base64("<api_key>:")).
+  verified: probed
+  evidence:
+    request: 'curl -u "<key>:" https://person.clearbit.com/v2/people/find?email=...'
+    http_status: 401
+    body: '{"error":{"type":"invalid_api_key","message":"Invalid API key provided"}}'
+    note: >-
+      A deliberately invalid key produced invalid_api_key rather than auth_required, which proves
+      the Basic credential was parsed and evaluated.
+- name: SecretApiKeyBearer
+  type: http
+  scheme: bearer
+  in: header
+  header: Authorization
+  description: 'API key supplied as a bearer token (Authorization: Bearer <api_key>).'
+  verified: probed
+  evidence:
+    request: 'curl -H "Authorization: Bearer <key>" https://company.clearbit.com/v2/companies/find?domain=...'
+    http_status: 401
+    body: '{"error":{"type":"invalid_api_key","message":"Invalid API key provided"}}'
+oauth2: false
+openid_connect: false
+mutual_tls: false
+scopes:
+  model: none
+  note: >-
+    No OAuth scopes and no permission scoping of any kind. One account-level secret key grants
+    every endpoint the plan entitles. scopes/ is intentionally not emitted for this provider.
+key_management:
+  location: Clearbit dashboard - Settings > Keys & Settings
+  visibility: Account Admins only
+  rotation_documented: false
+  issuance_status: closed
+  issuance_note: >-
+    "API keys are available for Clearbit accounts created in 2023 and earlier. If you signed up in
+    2024, free or paid plans with API keys are not available." — help centre, last updated
+    2025-02-16. Free Clearbit accounts were sunset 2025-04-30 and new accounts are not being
+    created.
+unauthenticated_endpoints:
+- name: Autocomplete API
+  base_url: https://autocomplete.clearbit.com
+  path: /v1/companies/suggest
+  auth: none
+  verified: probed
+  http_status: 200
+  note: >-
+    The only Clearbit endpoint that answers without a credential. Confirmed live 2026-08-13
+    returning a JSON array of {name, domain, logo}; the logo field now returns null (see
+    lifecycle/clearbit-lifecycle.yml).
+failure_modes:
+- http_status: 401
+  type: auth_required
+  message: Authentication is required for this action. Sign up at https://clearbit.com
+  meaning: No Authorization header presented.
+- http_status: 401
+  type: invalid_api_key
+  message: Invalid API key provided
+  meaning: Authorization header presented but the credential did not resolve to an account.
+transport:
+  https_required: true
+  hsts: true
+  hsts_max_age: 63072000
+  note: Every API host answered HTTP/2 with strict-transport-security preload on 2026-08-13.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

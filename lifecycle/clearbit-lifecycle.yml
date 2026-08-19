@@ -1,0 +1,167 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://clearbit.com/changelog,
+  https://help.clearbit.com/hc/en-us/articles/115015797408-Clearbit-API-Version-Change-Logs,
+  https://help.clearbit.com/hc/en-us/articles/6987867587607-Logo-API-I-FAQ,
+  plus live probes of every Clearbit API host on 2026-08-13
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+description: >-
+  Clearbit runs a Stripe-style dated version model: your account's API version is pinned the first
+  time you call, every backwards-incompatible change ships as a new dated version, and the version
+  in force is echoed on every response in the x-api-version header. The provider is in active,
+  publicly dated wind-down — the free tools were sunset 2025-04-30, the free Logo API was sunset
+  2025-12-08, and new API keys have not been issued since 2023.
+versioning:
+  scheme: dated-account-version
+  signal: response-header
+  response_header: x-api-version
+  request_override: >-
+    A specific version can be requested per call by setting the version header on the request; the
+    account-wide default is changed from the dashboard API section.
+  pinning: >-
+    "Your version gets set the first time you make an API request. When we change any of our APIs
+    in a backwards-incompatible way, we release a new dated version, but to avoid breaking your
+    code, we don't change your version until you're ready to upgrade."
+  docs: https://help.clearbit.com/hc/en-us/articles/115015797408-Clearbit-API-Version-Change-Logs
+  observed_versions:
+  - host: person.clearbit.com
+    x_api_version: '2019-12-19'
+    verified: probed
+  - host: person-stream.clearbit.com
+    x_api_version: '2019-12-19'
+    verified: probed
+  - host: company.clearbit.com
+    x_api_version: '2019-12-19'
+    verified: probed
+  - host: reveal.clearbit.com
+    x_api_version: '2019-12-19'
+    verified: probed
+  - host: prospector.clearbit.com
+    x_api_version: '2018-11-16'
+    verified: probed
+  - host: risk.clearbit.com
+    x_api_version: '2016-05-03'
+    verified: probed
+  published_versions:
+  - version: '2022-12-15'
+    apis: [Reveal, Discovery, Company]
+    change: Added metrics.trafficRank.
+  - version: '2019-12-19'
+    apis: [Reveal, Company, Person]
+    change: ultimate_parent key camelCased to ultimateParent.
+  - version: '2019-01-13'
+    apis: [Prospector]
+    change: query parameter gained AND/OR/NOT support.
+  - version: '2018-11-16'
+    apis: [Prospector]
+    change: Added subRole attribute; role parameter searches role and subRole.
+  - version: '2018-08-15'
+    apis: [Prospector]
+    change: Added city/cities[]/state/states[]/country/countries[] location parameters.
+  - version: '2016-05-03'
+    apis: [Risk]
+    change: Version currently reported by risk.clearbit.com.
+deprecation:
+  policy_url: https://clearbit.com/changelog
+  policy_style: dated-changelog-announcement
+  sunset_header: false
+  sunset_header_note: >-
+    RFC 8594 Sunset / Deprecation response headers were probed on the live hosts on 2026-08-13 and
+    are NOT emitted. Every retirement was announced in prose on the release-notes page and in the
+    help centre, with lead times of roughly six to ten months, but nothing signals it on the wire —
+    an agent calling the API could not detect an impending sunset from the response.
+  lead_time_observed: 6-10 months
+  announcements:
+  - date: '2025-02-13'
+    subject: Free Clearbit tools
+    effective: '2025-04-30'
+    detail: >-
+      Free Clearbit Platform, Weekly Visitor Report, Clearbit Connect, TAM Calculator and the free
+      Slack integration discontinued. After 2025-04-30 free tools are unsupported.
+    url: https://clearbit.com/changelog
+  - date: '2025-06-10'
+    subject: Autocomplete API logo field
+    effective: '2025-09-09'
+    detail: The logo field in the Autocomplete API response returns null.
+    verified: probed
+    verification: >-
+      Confirmed 2026-08-13 — GET https://autocomplete.clearbit.com/v1/companies/suggest?query=clearbit
+      returned 200 with "logo":null on every result.
+  - date: '2025-06-10'
+    subject: Logo API
+    effective: '2025-12-01'
+    detail: >-
+      Original sunset date for the public Logo API (https://logo.clearbit.com/domain), affecting
+      all users including active subscriptions.
+  - date: '2025-10-22'
+    subject: Logo API
+    effective: '2025-11-12'
+    detail: Deliberate 24-hour planned outage to surface remaining dependents ahead of the sunset.
+  - date: '2025-11-24'
+    subject: Logo API
+    effective: '2025-12-08'
+    detail: Final sunset date. After 2025-12-08 the public Logo API URL is no longer available.
+    url: https://clearbit.com/changelog
+retired_apis:
+- name: Clearbit Logo API
+  base_url: https://logo.clearbit.com
+  retired: '2025-12-08'
+  state: dns-removed
+  verified: probed
+  verification: >-
+    Confirmed 2026-08-13 — logo.clearbit.com does not resolve (NXDOMAIN, curl "Could not resolve
+    host"). The host record has been withdrawn entirely, not merely 410'd, so callers get a DNS
+    failure rather than a documented gone response.
+  replacement: >-
+    Logos remain available to paying customers through the Company Enrichment API logo attribute.
+    Clearbit's own page recommends Logo.dev for public use.
+  source: https://clearbit.com/logo
+- name: Clearbit Connect
+  retired: '2025-04-30'
+  state: sunset
+  source: https://help.clearbit.com/hc/en-us/articles/115015432728-Sunset-What-is-Clearbit-Connect
+unsupported_apis:
+- name: Name to Domain API
+  state: legacy-unsupported
+  quote: >-
+    "The Name to Domain and Risk APIs are offered as free, legacy products exclusively for
+    Clearbit's existing customers. They are unsupported at this time."
+  source: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+- name: Risk API
+  state: legacy-unsupported
+  source: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+onboarding:
+  new_api_keys: closed
+  since: '2024-01-01'
+  detail: >-
+    "API keys are available for Clearbit accounts created in 2023 and earlier. If you signed up in
+    2024, free or paid plans with API keys are not available." New customers are routed to HubSpot
+    Breeze Intelligence.
+  source: https://help.clearbit.com/hc/en-us/articles/6045527495191-How-Do-I-Access-My-Clearbit-API-Key
+status_page: https://status.clearbit.com/
+status_page_platform: Atlassian Statuspage
+status_page_uptime: https://status.clearbit.com/uptime
+changelog: https://clearbit.com/changelog
+sla:
+  url: null
+  uptime_target: null
+  note: No published SLA or uptime target found on the trust page, legal terms or status page.
+deprecated_operations: []
+deprecated_operations_note: >-
+  Cannot be derived — Clearbit publishes no OpenAPI. See x-coverage in apis.yml.
+evidence:
+- url: https://clearbit.com/changelog
+  http_status: 200
+  fetched: '2026-08-13'
+- url: https://status.clearbit.com/
+  http_status: 200
+  fetched: '2026-08-13'
+- url: https://logo.clearbit.com/clearbit.com
+  http_status: 0
+  fetched: '2026-08-13'
+  note: DNS resolution failure (NXDOMAIN).
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

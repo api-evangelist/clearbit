@@ -1,20 +1,97 @@
-generated: '2026-07-11'
+generated: '2026-08-13'
 method: searched
-probe: true
 source: https://clearbit.com/trust
 url: https://clearbit.com/trust
-certifications:
-- SOC 2
-- ISO 27001
-- PCI DSS
-- FedRAMP
-- GDPR
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+has_trust_center: true
+description: >-
+  Clearbit publishes a single-page trust center covering legal terms, data governance and privacy,
+  compliance posture, security practices and a link to the status page. It documents a real
+  compliance program — California data-broker registration, CCPA subjection, GDPR alignment, a
+  subprocessor list, annual third-party penetration testing — but it does NOT claim any
+  Clearbit-held security certification.
+certifications: []
+certifications_note: >-
+  CORRECTION (2026-08-13). Earlier rounds of this artifact listed SOC 2, ISO 27001, PCI DSS and
+  FedRAMP as Clearbit certifications. They are not. The single sentence on the trust page that
+  contains those four strings attributes them to Clearbit's cloud vendors, not to Clearbit:
+  "The AWS and GCP cloud infrastructure has been designed and managed in compliance with
+  regulations, standards, and best practices, including SOC 2, ISO 27001, FedRAMP, GDPR, CCPA, and
+  PCI DSS Level 1." The page links out to aws.amazon.com/compliance/programs/ and
+  cloud.google.com/security/compliance as the evidence for that sentence. Keyword-matching the
+  page credits Clearbit with an inherited posture it never claimed; the certifications list is
+  therefore empty and the real, Clearbit-attributable program is recorded under compliance_program
+  below.
+inherited_infrastructure_compliance:
+  attributed_to:
+  - Amazon Web Services
+  - Google Cloud Platform
+  standards:
+  - SOC 2
+  - ISO 27001
+  - FedRAMP
+  - GDPR
+  - CCPA
+  - PCI DSS Level 1
+  quote: >-
+    "The AWS and GCP cloud infrastructure has been designed and managed in compliance with
+    regulations, standards, and best practices, including SOC 2, ISO 27001, FedRAMP, GDPR, CCPA,
+    and PCI DSS Level 1."
+  references:
+  - https://aws.amazon.com/compliance/programs/
+  - https://cloud.google.com/security/compliance
+  scope: cloud-infrastructure-only
+compliance_program:
+  url: https://clearbit.com/trust#compliance
+  items:
+  - name: California data broker registration
+    status: registered
+    quote: Clearbit is a registered data broker in California.
+  - name: CCPA
+    status: subject
+    quote: >-
+      "...and is subject to CCPA (California Consumer Privacy Act) and other applicable US privacy
+      laws."
+  - name: GDPR
+    status: aligned
+    quote: We're aligned with the General Data Protection Regulation (GDPR) principles.
+    note: >-
+      The page states alignment with GDPR principles. It does not claim certification or an
+      adequacy mechanism.
+  - name: Subprocessor disclosure
+    status: published
+    url: https://clearbit.com/subprocessors
+  - name: CCPA opt-out
+    status: published
+    url: https://clearbit.com/ccpa-opt-out
+  - name: Privacy preference centre
+    status: published
+    url: https://preferences.clearbit.com/privacy
+sections:
+- name: Legal
+  url: https://clearbit.com/trust#legal
+- name: Data Governance and Privacy
+  url: https://clearbit.com/trust#data-governance-and-privacy-at-clearbit
+- name: Compliance
+  url: https://clearbit.com/trust#compliance
+- name: Security
+  url: https://clearbit.com/trust#security
+- name: Status
+  url: https://clearbit.com/trust#status
+security_contact: security@clearbit.com
+status_page: https://status.clearbit.com/
+corporate_note: >-
+  The terms of service state APIHub, Inc. dba Clearbit assigned the terms to its affiliate HubSpot,
+  Inc.; the Clearbit brand now operates under HubSpot, Inc. Terms and privacy policy were both last
+  updated 2025-05-30.
 evidence:
-- source: https://clearbit.com/trust
-  keywords:
-  - soc 2
-  - iso 27001
-  - pci dss
-  - fedramp
-  - trust center
-  - gdpr
+- url: https://clearbit.com/trust
+  http_status: 200
+  fetched: '2026-08-13'
+- url: https://clearbit.com/legal
+  http_status: 200
+  fetched: '2026-08-13'
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

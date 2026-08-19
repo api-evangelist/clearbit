@@ -1,0 +1,147 @@
+generated: '2026-08-13'
+method: searched
+source: https://clearbit.com/changelog
+docs: https://clearbit.com/changelog
+api_version_log: https://help.clearbit.com/hc/en-us/articles/115015797408-Clearbit-API-Version-Change-Logs
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+description: >-
+  Clearbit maintains two separate dated logs. "Clearbit release notes" at clearbit.com/changelog is
+  the product log — server-rendered, dated, and the channel through which every sunset was
+  announced. The API version change log in the help centre is the contract log, listing each dated
+  API version and the field-level change it introduced. The product log has gone quiet on features:
+  after August 2024 every entry is a retirement notice.
+scheme:
+  product_log: dated-entries, newest first, server-rendered HTML
+  api_version_log: dated-api-versions with per-version field changes
+  entry_shape: 'Date heading, optional named announcement, then "Changes, improvements, and bug fixes"'
+current_api_versions:
+  person: '2019-12-19'
+  company: '2019-12-19'
+  reveal: '2019-12-19'
+  prospector: '2018-11-16'
+  risk: '2016-05-03'
+  verified: probed
+  note: Read from the x-api-version response header on each host on 2026-08-13.
+last_entry: '2025-11-24'
+cadence_note: >-
+  Weekly through mid-2024, then sparse. The four most recent entries (2025-02-13, 2025-06-10,
+  2025-10-22, 2025-11-24) are all deprecation announcements; each carries "No significant bug
+  fixes to note".
+entries:
+- date: '2025-11-24'
+  title: 'December 8: Clearbit Logo API Sunset'
+  type: deprecation
+  breaking: true
+  effective: '2025-12-08'
+  highlights:
+  - After 2025-12-08 the public Logo API URL (logo.clearbit.com) is no longer available.
+  - >-
+      Directs remaining users to audit integrations and contact their CSM or support@clearbit.com
+      for alternative logo access.
+- date: '2025-10-22'
+  title: 'Nov 12: Planned 24-Hour Outage of Logo API (logo.clearbit.com)'
+  type: deprecation
+  breaking: true
+  effective: '2025-11-12'
+  highlights:
+  - >-
+      A deliberate 24-hour outage on 2025-11-12, described as "intentional and designed to help
+      users still relying on the service take notice".
+- date: '2025-06-10'
+  title: Clearbit Logo API Will Be Sunset on December 1, 2025
+  type: deprecation
+  breaking: true
+  effective: '2025-12-01'
+  highlights:
+  - Affects all users, including those with active subscriptions.
+  - From 2025-09-09 the logo field in the Autocomplete API returns null.
+  - >-
+      Alternatives named: the Company Enrichment API logo attribute, and the Name to Domain API
+      logo field.
+- date: '2025-02-13'
+  title: Clearbit's free tools will be discontinued on April 30, 2025
+  type: deprecation
+  breaking: true
+  effective: '2025-04-30'
+  highlights:
+  - >-
+      Free Clearbit Platform, Weekly Visitor Report, Clearbit Connect, TAM Calculator and the free
+      Slack integration all discontinued.
+  - Logo API sunset first announced here, for 2025-12-01.
+  - Points users to HubSpot Breeze Intelligence, and to Logo.dev for logos.
+- date: '2024-08-27'
+  title: Changes, improvements, and bug fixes
+  type: improvement
+  breaking: false
+  highlights:
+  - >-
+      Audience results no longer limited to Salesforce accounts and HubSpot companies with fewer
+      than 50 contacts.
+  - HubSpot Enrichment now processes Tech Tag and Company Tag picklists.
+- date: '2024-03-19'
+  title: Clearbit by HubSpot
+  type: feature
+  breaking: false
+  highlights:
+  - >-
+      Launch of the HubSpot-centric Clearbit experience combining Enrichment, Forms, Target
+      Markets and Visitors.
+  - Free accounts get Target Markets, Visitors, Lookup and HubSpot CRM sync.
+  - Paid accounts additionally get Enrichment and Forms.
+- date: '2024-04-09'
+  title: Changes, improvements, and bug fixes
+  type: improvement
+  breaking: false
+  highlights:
+  - >-
+      Community Data Opt Out added to Admin Account Settings, letting customers prevent submitted
+      email addresses from entering the Clearbit database.
+  - Restricted picklists now push only matching values instead of dropping the whole field.
+- date: '2024-04-16'
+  title: Changes, improvements, and bug fixes
+  type: improvement
+  breaking: false
+  highlights:
+  - List Enrichment now limits enriching the same list to three times within an hour.
+- date: '2024-01-30'
+  title: Changes, improvements, and bug fixes
+  type: fix
+  breaking: false
+  highlights:
+  - Improved accuracy of NAICS industry values in Company records.
+  - Addressed increased response times in the Reveal API.
+api_version_entries:
+- version: '2022-12-15'
+  apis: [Reveal, Discovery, Company]
+  breaking: false
+  change: >-
+    Added metrics.trafficRank. alexaUsRank and alexaGlobalRank kept until June 2023 to avoid
+    breaking customer logic; Alexa Rank data noted as increasingly stale following that API's
+    deprecation.
+- version: '2019-12-19'
+  apis: [Reveal, Company, Person]
+  breaking: true
+  change: ultimate_parent renamed to camelCase ultimateParent.
+- version: '2019-01-13'
+  apis: [Prospector]
+  breaking: false
+  change: query parameter gained AND/OR/NOT support.
+- version: '2018-11-16'
+  apis: [Prospector, Person]
+  breaking: false
+  change: Added subRole; role parameter searches both role and subRole.
+- version: '2018-08-15'
+  apis: [Prospector]
+  breaking: false
+  change: Added location parameters (city, cities[], state, states[], country, countries[]) and pagination.
+evidence:
+- url: https://clearbit.com/changelog
+  http_status: 200
+  fetched: '2026-08-13'
+- url: https://help.clearbit.com/api/v2/help_center/en-us/articles/115015797408.json
+  http_status: 200
+  fetched: '2026-08-13'
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

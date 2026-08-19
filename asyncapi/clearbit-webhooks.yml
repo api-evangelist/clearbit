@@ -1,0 +1,106 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://help.clearbit.com/hc/en-us/articles/6045237670551-What-is-the-Webhook-URL-For,
+  https://help.clearbit.com/hc/en-us/articles/360022031574-Set-Up-an-Audience-Webhook-Destination,
+  https://help.clearbit.com/hc/en-us/articles/10065050209815-What-is-a-202-Status-Code
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+asyncapi_spec: null
+asyncapi_note: >-
+  Clearbit publishes no AsyncAPI document. Probed /asyncapi.yaml and /asyncapi.json on every
+  Clearbit host on 2026-08-13 — all 404. The provider does document two distinct webhook surfaces
+  in prose, catalogued below; nothing here is generated, every field is quoted from or shown in a
+  provider help-centre article.
+description: >-
+  Clearbit ships two unrelated webhook surfaces. The first is a request-scoped delivery channel:
+  because an enrichment lookup can return 202 and resolve later, an account-wide webhook URL can
+  be registered so the resolved payload is POSTed when it is ready. The second is an
+  audience/segment destination that fires when a company or person enters or exits a saved
+  audience, carrying a documented JSON payload. Neither is versioned, signed or replayable as far
+  as the published documentation goes.
+webhooks:
+- id: enrichment-async-response
+  name: Enrichment asynchronous response webhook
+  kind: request-scoped-delivery
+  description: >-
+    "Certain requests, such as looking up an email address, may have an asynchronous response
+    (since there's some complex background processing involved). For these requests, you can
+    either poll the endpoint or give us a webhook URL you want to be called when the request has
+    finished processing."
+  configuration:
+    location: Clearbit Dashboard > API tab (account API settings)
+    scope: account-wide
+    applies_to: all requests
+    provider_warning: >-
+      "Please be cautious when using this field. Data will be sent to this URL on every request,
+      so this field should only be filled if you have a properly configured webhook to handle the
+      data."
+  transport: HTTPS POST
+  payload: The enrichment response body that would have been returned synchronously.
+  triggers:
+  - A lookup that returned 202 has finished processing.
+  latency: >-
+    No published estimate. Provider states webhook delivery "typically takes longer than
+    non-webhook users"; callers who cannot wait are directed to the streaming endpoints.
+  source: https://help.clearbit.com/hc/en-us/articles/6045237670551-What-is-the-Webhook-URL-For
+- id: audience-webhook-destination
+  name: Audience Webhook Destination
+  kind: segment-membership-event
+  description: >-
+    "Our Webhook Destination allows you to send segment matches anywhere you need to. When
+    enabled, Clearbit will post a JSON payload to the URL you specify. The payload includes data
+    about the company/person that matched as well as metadata about the destination and segment."
+  configuration:
+    location: Any Clearbit audience > Destinations tab > Webhook > Create
+    scope: per-audience
+    plans: Standard Bundle, Enrichment, or Clearbit Platform
+  transport: HTTPS POST
+  triggers:
+  - id: segment_enter
+    description: Fires only when a company/person enters the audience.
+  - id: segment_exit
+    description: Fires only when a company/person exits the audience.
+  payload_envelope:
+    context:
+      destination_id: string
+      segment_id: string
+      segment_name: string
+      segment_type: company | person
+      timestamp: ISO 8601 with offset
+      trigger: segment_enter | segment_exit
+    company:
+      domain: string
+      name: string
+      logo: string
+      enrichment: Nested Company Enrichment record (name, domain, metrics.employees_range, ...)
+      traits: Account traits keyed by name (e.g. paid=true)
+      events:
+        page_views: Array of {host, path, timestamp}
+    note: >-
+      "While the format will be the same, the attributes available will differ depending on which
+      you choose to include."
+  payload_example_source: https://help.clearbit.com/hc/en-us/articles/360022031574-Set-Up-an-Audience-Webhook-Destination
+  stale_field_warning: >-
+    The provider's published example payload still shows a company.logo value of
+    https://logo.clearbit.com/clearbit.com. That host was sunset 2025-12-08 and no longer resolves
+    (verified 2026-08-13) — the documented example is now a dead URL.
+security:
+  signing: false
+  signature_header: null
+  shared_secret: false
+  replay_protection: false
+  retry_policy: null
+  note: >-
+    No webhook signature, timestamp-tolerance, shared secret, replay window or retry/backoff
+    policy is documented for either surface. A receiver cannot verify that a payload originated
+    from Clearbit.
+integrations_documented:
+- name: Zapier (Catch Hook)
+  url: https://help.clearbit.com/hc/en-us/articles/360022714773-Integrate-Clearbit-to-Zapier-via-Webhooks
+- name: Segment
+  url: https://help.clearbit.com/hc/en-us/articles/360010026934-Connect-Segment-to-Clearbit
+event_count: 2
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

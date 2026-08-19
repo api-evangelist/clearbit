@@ -1,0 +1,123 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  Live responses from person/company/reveal/prospector/risk/discovery/autocomplete.clearbit.com on
+  2026-08-13, plus
+  https://help.clearbit.com/hc/en-us/articles/10065050209815-What-is-a-202-Status-Code
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+format: custom
+rfc9457: false
+description: >-
+  Clearbit does not use RFC 9457 problem+json. Every non-2xx response carries a bespoke JSON
+  envelope, {"error": {"type", "message"}}, served as application/json. The type field is a stable
+  machine-readable slug and is the only field an agent should branch on. This catalogue was built
+  by probing the live hosts — Clearbit publishes no OpenAPI and no consolidated error reference, so
+  every entry below is either an observed response or a documented status from the help centre.
+envelope:
+  content_type: application/json
+  schema:
+    error:
+      type: string
+      message: string
+  example: |-
+    {
+      "error": {
+        "type": "auth_required",
+        "message": "Authentication is required for this action. Sign up at https://clearbit.com"
+      }
+    }
+problems:
+- status: 401
+  type: auth_required
+  title: Authentication required
+  detail: Authentication is required for this action. Sign up at https://clearbit.com
+  meaning: No Authorization header was presented.
+  remediation: >-
+    Send the account's secret API key as HTTP Basic (key as username, empty password) or as a
+    Bearer token.
+  method: probed
+  observed_on:
+  - https://person.clearbit.com/v2/people/find
+  - https://person.clearbit.com/v2/combined/find
+  - https://company.clearbit.com/v2/companies/find
+  - https://company.clearbit.com/v1/domains/find
+  - https://reveal.clearbit.com/v1/companies/find
+  - https://prospector.clearbit.com/v1/people/search
+  - https://risk.clearbit.com/v1/calculate
+  - https://discovery.clearbit.com/v1/companies/search
+  - https://person-stream.clearbit.com/v2/combined/find
+- status: 401
+  type: invalid_api_key
+  title: Invalid API key
+  detail: Invalid API key provided
+  meaning: >-
+    An Authorization header was presented and parsed, but the credential did not resolve to an
+    account.
+  remediation: >-
+    Re-read the key from the dashboard Settings > Keys & Settings (Admins only). Note that new
+    keys are no longer issued for accounts created after 2023.
+  method: probed
+  observed_on:
+  - https://person.clearbit.com/v2/people/find
+  - https://company.clearbit.com/v2/companies/find
+- status: 404
+  type: unknown_route
+  title: Unknown route
+  detail: 'Sorry, that route can not be found. Please refer to our docs https://clearbit.com/docs'
+  meaning: >-
+    The path does not exist on that host. Returned before authentication is evaluated, so it is
+    also the response to any /.well-known/* probe against an API host.
+  remediation: Check the host/path pairing; each Clearbit product is a separate subdomain.
+  method: probed
+  observed_on:
+  - https://person.clearbit.com/openapi.json
+  - https://autocomplete.clearbit.com/v1/domains/suggest
+- status: 202
+  type: null
+  title: Lookup queued
+  detail: >-
+    Empty-bodied acceptance. The email or domain is not warm in the index; Clearbit has queued a
+    reindex and will resolve the lookup asynchronously.
+  meaning: NOT an error. The asynchronous branch of a normal lookup.
+  remediation: >-
+    Retry after a few minutes, or call the person-stream.clearbit.com host, or pass cached=true,
+    or register a webhook. See conventions/clearbit-conventions.yml.
+  method: searched
+  source: https://help.clearbit.com/hc/en-us/articles/10065050209815-What-is-a-202-Status-Code
+  agent_note: >-
+    The single most important status on this API for an autonomous caller. A client that treats
+    2xx as terminal success will silently record an empty result.
+- status: 429
+  type: null
+  title: Rate limit exceeded
+  detail: >-
+    Returned when the documented 600 requests/minute budget for an API is exhausted. Clearbit
+    directs callers to the x-ratelimit-* response headers to track the budget.
+  meaning: Throttled.
+  remediation: >-
+    Back off until x-ratelimit-reset (unix epoch seconds). No Retry-After header is emitted.
+  method: derived
+  source: >-
+    rate-limits/clearbit-rate-limits.yml — documented limit and header contract. The 429 body was
+    NOT provoked (deliberately not exhausted against a live production API), so the envelope shape
+    for this status is unconfirmed.
+  confidence: medium
+not_observed:
+  note: >-
+    No 4xx validation error was reachable anonymously — every malformed request was rejected at
+    the auth layer first, so 422/400 shapes could not be confirmed. Recorded as absent rather
+    than guessed.
+  statuses_unconfirmed:
+  - 400
+  - 403
+  - 422
+  - 500
+coverage:
+  problems_documented: 5
+  from_live_probe: 3
+  from_docs: 1
+  derived: 1
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

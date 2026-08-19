@@ -1,0 +1,96 @@
+generated: '2026-08-13'
+method: probed
+source: live GET of /.well-known/* on every apis.yml host on 2026-08-13
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+result: none
+description: >-
+  Every RFC 8615 well-known path was probed on all eight Clearbit hosts (the marketing site, the
+  dashboard/docs SPA, and the six API hosts). Every path returned 404. There is no security.txt,
+  no OIDC or OAuth discovery document, no api-catalog, no ai-plugin manifest and no A2A agent card
+  anywhere on the Clearbit estate. NO WellKnown, SecurityTxt or AgentCard pointer is wired in
+  apis.yml — this file records a verified absence, not a presence.
+notes: >-
+  The API hosts answer /.well-known/* with the API's own JSON 404 envelope
+  ({"error":{"type":"unknown_route"}}), which confirms the probe reached the API origin rather
+  than a CDN catch-all. The marketing site and dashboard return HTML 404 shells.
+hosts:
+- host: clearbit.com
+  kind: marketing-site
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/openid-configuration, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: text/html, file: null}
+- host: dashboard.clearbit.com
+  kind: docs-console
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/openid-configuration, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: text/html, file: null}
+- host: person.clearbit.com
+  kind: api
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/openid-configuration, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/oauth-authorization-server, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/ai-plugin.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: application/json, file: null}
+- host: company.clearbit.com
+  kind: api
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: application/json, file: null}
+- host: reveal.clearbit.com
+  kind: api
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: application/json, file: null}
+- host: prospector.clearbit.com
+  kind: api
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: text/html, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: text/html, file: null}
+- host: autocomplete.clearbit.com
+  kind: api
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: application/json, file: null}
+- host: risk.clearbit.com
+  kind: api
+  documents:
+  - {path: /.well-known/security.txt, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent-card.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/agent.json, status: 404, content_type: application/json, file: null}
+  - {path: /.well-known/api-catalog, status: 404, content_type: application/json, file: null}
+summary:
+  paths_probed: 44
+  hits: 0
+  security_txt: false
+  agent_card: false
+  api_catalog: false
+  oauth_discovery: false
+security_contact_elsewhere: >-
+  Clearbit does publish a security contact — security@clearbit.com and a phone number — but on the
+  human trust page at https://clearbit.com/trust#security, not at /.well-known/security.txt. See
+  security/clearbit-vulnerability-disclosure.yml.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

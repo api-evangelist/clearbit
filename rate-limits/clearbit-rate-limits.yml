@@ -4,8 +4,17 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Clearbit (HubSpot Breeze Intelligence)
 providerId: clearbit
 created: '2026-05-08'
-modified: '2026-05-08'
-reconciled: false
+generated: '2026-08-13'
+method: searched
+source: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+docs: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+modified: '2026-08-13'
+reconciled: true
+provenance_note: >-
+  UPGRADED 2026-08-13 from method:generated to method:searched. The prior file carried an unsourced
+  "600 RPM historical" figure written by the 2026-05-08 bulk sweep. The 600/minute number is now
+  confirmed against the provider's own help centre (article last updated 2025-04-25), and the
+  response-header contract below was observed live on the production endpoints on 2026-08-13.
 tags:
 - Sales Intelligence
 - B2B
@@ -17,36 +26,163 @@ tags:
 - Quotas
 - Throttling
 description: >-
-  Clearbit's paid APIs are rate-limited per API key with monthly quotas tied to the plan; documented
-  historical default was 600 requests/minute on Enrichment for paid plans. The free Logo and
-  Autocomplete APIs apply soft per-IP throttling. With the HubSpot transition, exact thresholds are
-  migrating to Breeze Intelligence and not consistently documented.
-notes: Historical default 600 RPM on Enrichment paid plans; Breeze migration changes exact thresholds.
-sources:
-- https://dashboard.clearbit.com/docs
+  Clearbit documents a flat 600 requests per minute per API, explicitly excluding the Streaming and
+  Reveal endpoints, and tells callers to read their live budget off the response headers rather
+  than assume the number. The headers are real and were verified: every request to
+  person/company/prospector.clearbit.com returns the legacy x-ratelimit-limit /
+  x-ratelimit-remaining / x-ratelimit-reset triple, and returns it even on a 401, so an
+  unauthenticated caller can observe the budget. Coverage is uneven — reveal, risk, discovery and
+  the streaming host emit no rate-limit headers at all.
+provider_guidance: >-
+  "You can make 600 requests per minute to each API (unless you are using Streaming or Reveal).
+  Check the returned HTTP headers of any API request to see your current rate limit status."
 responseCodes:
   throttled: 429
+  throttled_verified: false
+  throttled_note: >-
+    429 is the expected status but was NOT provoked — the pipeline does not exhaust a live
+    production budget. The error envelope for 429 is therefore unconfirmed.
+headers:
+- name: x-ratelimit-limit
+  description: Requests permitted in the current window.
+  observed_value_anonymous: 100
+  verified: probed
+- name: x-ratelimit-remaining
+  description: Requests left in the current window. Decremented on every call, including rejected ones.
+  verified: probed
+  note: >-
+    Observed counting down 89 -> 88 -> 87 -> 86 across four consecutive unauthenticated probes on
+    2026-08-13, which confirms 401s consume budget.
+- name: x-ratelimit-reset
+  description: Unix epoch seconds at which the window resets.
+  format: unix-epoch-seconds
+  verified: probed
+- name: retry-after
+  present: false
+  note: >-
+    NOT emitted. A backing-off agent must compute the wait from x-ratelimit-reset itself.
+standards_note: >-
+  Legacy X-RateLimit-* spelling, not the IETF draft RateLimit / RateLimit-Policy fields. Real
+  signal, non-standard names.
 limits:
-- name: Enrichment (paid, historical)
-  scope: account
+- name: Enrichment (Person / Company / Combined)
+  host: person.clearbit.com, company.clearbit.com
+  scope: api-key
   metric: requests
-  limit: 600/minute (historical)
-  notes: Legacy default; verify current via dashboard.
-- name: Reveal
-  scope: account
+  limit: 600
+  window: minute
+  headers_emitted: true
+  verified: probed
+  notes: Documented 600/min. x-ratelimit-* triple confirmed live on both hosts.
+- name: Prospector
+  host: prospector.clearbit.com
+  scope: api-key
   metric: requests
-  limit: see provider documentation
-  notes: Per-key limit.
-- name: Logo (free)
+  limit: 600
+  window: minute
+  headers_emitted: true
+  verified: probed
+- name: Name to Domain
+  host: company.clearbit.com/v1/domains/find
+  scope: api-key
+  metric: requests
+  limit: 600
+  window: minute
+  headers_emitted: true
+  verified: probed
+- name: Autocomplete (free, unauthenticated)
+  host: autocomplete.clearbit.com
   scope: ip
   metric: requests
-  limit: soft, per-IP
-  notes: Used for branding utilities.
+  limit: 600
+  window: minute
+  headers_emitted: false
+  verified: probed
+  notes: >-
+    Documented at 600/min alongside the other free APIs. No x-ratelimit-* headers on the 200
+    response; the host is CloudFront-fronted with a ~30 day cache-control, so repeat lookups are
+    served from edge cache and may not reach the origin budget at all.
+- name: Risk
+  host: risk.clearbit.com
+  scope: api-key
+  metric: requests
+  limit: 600
+  window: minute
+  headers_emitted: false
+  verified: probed
+  notes: Documented at 600/min. No rate-limit headers observed on response.
+- name: Reveal
+  host: reveal.clearbit.com
+  scope: api-key
+  metric: requests
+  limit: null
+  window: null
+  headers_emitted: false
+  verified: probed
+  notes: >-
+    Explicitly excluded from the documented 600/min figure and no limit is published in its place.
+    No rate-limit headers on the response either — the budget is neither documented nor observable.
+- name: Streaming Enrichment
+  host: person-stream.clearbit.com
+  scope: api-key
+  metric: concurrent-connections
+  limit: null
+  window: null
+  headers_emitted: false
+  verified: probed
+  notes: >-
+    Explicitly excluded from the 600/min figure. Each request can hold a connection open for up to
+    60 seconds, so the meaningful constraint is concurrency, not request rate — and no concurrency
+    limit is published.
+- name: Discovery
+  host: discovery.clearbit.com
+  scope: api-key
+  metric: requests
+  limit: null
+  window: null
+  headers_emitted: false
+  verified: probed
+  notes: No published limit and no headers observed.
+- name: List Enrichment (platform feature)
+  scope: account
+  metric: enrichments-per-list
+  limit: 3
+  window: hour
+  verified: searched
+  source: https://clearbit.com/changelog
+  notes: >-
+    "List Enrichment now limits enriching the same list to three times within an hour." Product
+    feature, not an API endpoint. Announced 2024-04-16.
+limit_count: 9
 policies:
-- name: Backoff Strategy
-  description: Honor 429 with Retry-After; cache responses where TOS allows.
+- name: Read the headers, not the docs
+  description: >-
+    Provider explicitly directs callers to the response headers for current status. Treat 600/min
+    as the documented ceiling and x-ratelimit-limit as the operative one — the anonymous limit
+    observed was 100, an order of magnitude below the documented figure.
+- name: Backoff
+  description: >-
+    No Retry-After is sent. Sleep until x-ratelimit-reset (unix epoch seconds), then retry.
+- name: Failed requests count
+  description: >-
+    401 responses decrement x-ratelimit-remaining. Retry loops against a bad credential will
+    exhaust the budget.
 - name: Caching
-  description: Cache enrichment results for at least 24h to reduce credit/quota usage.
+  description: >-
+    Cache enrichment results where the terms allow; Clearbit itself caches and offers cached=true
+    to force the cached response rather than a 202 queue.
+evidence:
+- url: https://person.clearbit.com/v2/combined/find?email=REDACTED
+  http_status: 401
+  fetched: '2026-08-13'
+  headers_seen: [x-ratelimit-limit, x-ratelimit-remaining, x-ratelimit-reset, x-api-version]
+- url: https://reveal.clearbit.com/v1/companies/find?ip=8.8.8.8
+  http_status: 401
+  fetched: '2026-08-13'
+  headers_seen: [x-api-version]
+- url: https://help.clearbit.com/api/v2/help_center/en-us/articles/8502992633111.json
+  http_status: 200
+  fetched: '2026-08-13'
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

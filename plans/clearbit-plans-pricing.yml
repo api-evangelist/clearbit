@@ -4,8 +4,16 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Clearbit (HubSpot Breeze Intelligence)
 providerId: clearbit
 created: '2026-05-08'
-modified: '2026-05-08'
+generated: '2026-08-13'
+method: searched
+source: https://clearbit.com/pricing
+modified: '2026-08-13'
 reconciled: true
+provenance_note: >-
+  UPGRADED 2026-08-13 from method:generated to method:searched. The prior file was written by the
+  2026-05-08 bulk sweep and asserted a HubSpot Breeze credit plan that Clearbit does not publish,
+  plus a free tier that included the Logo API — which was sunset 2025-12-08 and whose host no
+  longer resolves. Both were corrected against the provider's own pages.
 tags:
 - Sales Intelligence
 - B2B
@@ -15,68 +23,91 @@ tags:
 - Marketing
 - Plans
 description: >-
-  Clearbit was acquired by HubSpot in November 2023 and is being absorbed into HubSpot Breeze
-  Intelligence. Standalone Clearbit pricing has been deprecated; new customers buy Breeze Intelligence
-  credits as a HubSpot add-on. Existing Clearbit customers continue on legacy contracts but new self-
-  serve sign-up has been turned off. The Logo and Autocomplete APIs remain free and unauthenticated.
-notes: Acquired by HubSpot. New customers route through HubSpot Breeze Intelligence pricing. Logo and Autocomplete APIs remain free.
+  Clearbit no longer publishes pricing. https://clearbit.com/pricing is a marketing page announcing
+  the HubSpot acquisition — it carries no tier names, no prices, no quotas and no sign-up path;
+  probed 2026-08-13 and it contains not a single currency figure. There is exactly one publicly
+  available offering left: the Autocomplete API, which the provider's help centre states is "a
+  completely free product that you can use without needing an account or an API key". Everything
+  else requires an API key, and Clearbit stopped issuing keys for accounts created after 2023.
+  New commercial demand is routed to HubSpot Breeze Intelligence, which is HubSpot's product and
+  is priced on HubSpot's own pricing pages, not Clearbit's.
+plan_count: 1
+sign_up:
+  available: false
+  detail: >-
+    "API keys are available for Clearbit accounts created in 2023 and earlier. If you signed up in
+    2024, free or paid plans with API keys are not available." Free Clearbit accounts were sunset
+    2025-04-30 and new accounts are not being created.
+  source: https://help.clearbit.com/hc/en-us/articles/6045527495191-How-Do-I-Access-My-Clearbit-API-Key
+notes: >-
+  plan_count is 1, not 0 — the free unauthenticated Autocomplete tier is genuinely published. No
+  paid tier is published by Clearbit at any price point, and no contact-sales path to a Clearbit
+  plan exists either; the commercial motion has moved entirely to HubSpot.
 sources:
-- https://clearbit.com/
-- https://www.hubspot.com/products/breeze-intelligence
-- https://clearbit.com/logo
+- https://clearbit.com/pricing
+- https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
+- https://help.clearbit.com/hc/en-us/articles/6045527495191-How-Do-I-Access-My-Clearbit-API-Key
+- https://clearbit.com/changelog
 plans:
-- id: clearbit-free-utilities
-  name: Free Utilities (Logo, Autocomplete)
+- id: clearbit-autocomplete-free
+  name: Autocomplete API (free, no account)
   type: free
-  description: The Logo and Autocomplete APIs remain free, unauthenticated, and rate-limited.
+  description: >-
+    The Autocomplete API is free, requires no account and no API key, and is the only Clearbit
+    endpoint that answers an anonymous caller. Verified live 2026-08-13 — HTTP 200 with a JSON
+    array of company candidates.
+  availability: open
+  quote: >-
+    "Clearbit's Autocomplete API is a completely free product that you can use without needing an
+    account or an API key."
   entries:
   - label: API Access
     name: api_access
     type: flat
     metric: requests
-    limit: -1
-    timeFrame: usage
+    limit: 600
+    timeFrame: minute
     geo: global
     unit: 1
     price: 0
     userMultiplied: false
   elements:
-  - name: No auth
-  - name: Logo, Autocomplete only
-- id: breeze-intelligence
-  name: HubSpot Breeze Intelligence (replacement)
-  type: subscription
-  description: Sold as a credit-based HubSpot add-on; replaces legacy Clearbit enrichment/reveal/prospecting for new customers.
-  entries:
-  - label: Credits
-    name: credits
-    type: flat
-    metric: credit
-    limit: -1
-    timeFrame: monthly
-    geo: global
-    unit: 1
-    price: see https://www.hubspot.com/products/breeze-intelligence
-    userMultiplied: false
-  elements:
-  - name: Buy in credit packs as a HubSpot add-on
-- id: clearbit-legacy
-  name: Clearbit Legacy (Existing Customers)
-  type: enterprise
-  description: Legacy Clearbit subscriptions remain in force for existing customers; not available for new sign-up.
-  entries:
-  - label: Contract
-    name: contract
-    type: flat
-    metric: year
-    limit: -1
-    timeFrame: annual
-    geo: global
-    unit: 1
-    price: legacy
-    userMultiplied: false
-  elements:
-  - name: Enrichment, Reveal, Prospector
+  - name: No authentication
+  - name: Autocomplete only (/v1/companies/suggest)
+  - name: 600 requests per minute
+  - name: logo field returns null since 2025-09-09
+  - name: Unsupported — "not regularly maintained by our engineering team"
+withdrawn_plans:
+- id: clearbit-free-tools
+  name: Free Clearbit Platform and free tools
+  withdrawn: '2025-04-30'
+  detail: >-
+    Free Clearbit Platform, Weekly Visitor Report, Clearbit Connect, TAM Calculator and the free
+    Slack integration all discontinued.
+  source: https://clearbit.com/changelog
+- id: clearbit-logo-api
+  name: Logo API (free and subscription)
+  withdrawn: '2025-12-08'
+  detail: >-
+    "Clearbit is no longer selling new subscriptions to the Logo API." Host logo.clearbit.com no
+    longer resolves.
+  source: https://help.clearbit.com/hc/en-us/articles/6987867587607-Logo-API-I-FAQ
+legacy_plans_referenced_but_not_published:
+  note: >-
+    Clearbit help articles are scoped to named legacy plans, which is how we know the names — but
+    no page publishes their price, quota or terms, and none can be purchased.
+  names:
+  - Standard Bundle
+  - Enrichment
+  - Clearbit Platform
+  - Sales Intelligence for HubSpot (Free / Growth / Business — 2024 sign-ups)
+successor:
+  product: HubSpot Breeze Intelligence
+  vendor: HubSpot
+  url: https://www.hubspot.com/products/breeze-intelligence
+  note: >-
+    Priced by HubSpot as a credit-based add-on on HubSpot's own pricing pages. Not recorded as a
+    Clearbit plan here — it is a different vendor's SKU.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

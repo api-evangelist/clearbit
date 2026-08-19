@@ -1,0 +1,163 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://help.clearbit.com/hc/en-us/articles/10065050209815-What-is-a-202-Status-Code,
+  https://help.clearbit.com/hc/en-us/articles/7632230556567-What-Are-Clearbit-s-API-Response-Times,
+  https://help.clearbit.com/hc/en-us/articles/6045237670551-What-is-the-Webhook-URL-For,
+  https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ,
+  plus live header probes of every Clearbit API host on 2026-08-13
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+description: >-
+  Cross-cutting runtime semantics for the Clearbit REST APIs. The defining convention is the 202
+  contract: a lookup that is not warm in Clearbit's index returns 202 Accepted with no body rather
+  than blocking, and the caller chooses one of four resolution strategies — retry, switch to the
+  long-polling streaming host, accept a cached response, or register a webhook. Everything else is
+  conventional: one Basic/Bearer API key, dated account versioning echoed in a response header,
+  a bespoke (non-RFC-9457) error envelope, and per-key rate-limit headers on every response.
+auth:
+  style: api-key
+  transport:
+  - HTTP Basic (key as username, empty password)
+  - Bearer token
+  header: Authorization
+  scopes: none
+  see: authentication/clearbit-authentication.yml
+async_semantics:
+  primary_signal: 202
+  meaning: >-
+    "A 202 status code means that your lookup is queued and Clearbit has pushed it to the backlog
+    to retry when a response is available." Not an error — the asynchronous path for an email or
+    domain that has not been reindexed recently, or is new to the index.
+  caller_is_responsible: >-
+    "If your code does not account for it, status 202s will not automatically try again."
+  resolution_strategies:
+  - id: retry
+    detail: Retry the call after a few minutes; the retry reindexes the record and should return 200.
+  - id: streaming
+    detail: >-
+      Send the request to the streaming host instead, which holds the connection open for up to 60
+      seconds waiting for a 202 to resolve.
+    host_substitution:
+      from: person.clearbit.com
+      to: person-stream.clearbit.com
+    verified: probed
+    verification: >-
+      person-stream.clearbit.com confirmed live 2026-08-13, HTTP/2 401 auth_required with
+      x-api-version 2019-12-19.
+    tradeoff: Provider warns this "leads to slow Enrichment results".
+  - id: cached
+    detail: >-
+      Pass cached=true (e.g. /v2/combined/find?email={email}&cached=true) to get the cached JSON
+      immediately.
+    tradeoff: >-
+      "The data may be a bit outdated because status 202 implies that it's been some time since
+      that email/domain was enriched."
+  - id: webhook
+    detail: >-
+      Register a webhook URL in the dashboard API tab to receive the response when it resolves.
+    see: asyncapi/clearbit-webhooks.yml
+  latency_expectations:
+    reindexed_within_30_days: low hundreds of milliseconds, 200
+    not_in_database_or_stale: near-instant 202, reindex can take a couple of seconds
+    webhook: >-
+      No published estimate; the provider states it "typically takes longer than non-webhook users".
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No idempotency key, no request-replay semantics and no retention window are documented anywhere
+    in the Clearbit help centre or release notes. The dominant operations are GET lookups, which
+    are naturally idempotent, but there is no provider-published idempotency contract. NO
+    Idempotency pointer is wired in apis.yml — the check must not be credited to a provider that
+    does not publish the guarantee.
+pagination:
+  style: page-number
+  applies_to:
+  - Prospector API
+  - Discovery API
+  params:
+  - name: page
+    description: Page index.
+  - name: page_size
+    description: Results per page.
+  source: >-
+    https://help.clearbit.com/hc/en-us/articles/115015797408-Clearbit-API-Version-Change-Logs
+    (version 2018-08-15 "Add parameters for pagination" on the Prospector API).
+  confidence: medium
+  note: >-
+    The dated version log records that pagination parameters were added to Prospector in
+    2018-08-15 but does not enumerate them in the article body; the full reference lives behind
+    the JS-rendered docs SPA. Recorded at medium confidence rather than omitted.
+field_selection:
+  expansion: false
+  sparse_fields: false
+  note: >-
+    No expand/fields parameter documented. The Combined endpoint (/v2/combined/find) is the
+    provider's composition primitive — it returns the person and company records in one response
+    instead of offering field-level selection.
+metadata:
+  custom_fields: false
+request_tracing:
+  request_id_header: null
+  note: >-
+    No request-id or correlation header was returned on any probed response. Observed response
+    headers were limited to content-type, x-api-version, the x-ratelimit-* triple,
+    strict-transport-security, x-content-type-options and x-envoy-response-flags (an Envoy proxy
+    artefact, not a documented tracing contract).
+versioning:
+  scheme: dated-account-version
+  response_header: x-api-version
+  see: lifecycle/clearbit-lifecycle.yml
+error_envelope:
+  format: custom
+  rfc9457: false
+  content_type: application/json
+  shape: '{"error": {"type": "<machine_slug>", "message": "<human sentence>"}}'
+  verified: probed
+  example: '{"error":{"type":"auth_required","message":"Authentication is required for this action. Sign up at https://clearbit.com"}}'
+  note: >-
+    Stable across every host probed. The type field is a machine-readable slug and is the value an
+    agent should branch on; message is prose and includes a marketing URL.
+  see: errors/clearbit-problem-types.yml
+rate_limit_signaling:
+  documented_limit: 600 requests per minute per API
+  documented_exclusions:
+  - Streaming
+  - Reveal
+  response_headers:
+  - x-ratelimit-limit
+  - x-ratelimit-remaining
+  - x-ratelimit-reset
+  reset_format: unix-epoch-seconds
+  retry_after: false
+  verified: probed
+  provider_guidance: >-
+    "Check the returned HTTP headers of any API request to see your current rate limit status."
+  note: >-
+    The rate-limit triple is returned even on a 401, so an unauthenticated caller can read the
+    budget. Not every host emits it — reveal.clearbit.com, risk.clearbit.com,
+    person-stream.clearbit.com and discovery.clearbit.com returned no x-ratelimit-* headers on
+    2026-08-13.
+  see: rate-limits/clearbit-rate-limits.yml
+caching:
+  server_cache: >-
+    Responses are cached; a record reindexed within the past 30 days returns from cache quickly.
+  client_directive: cached=true forces the cached response instead of a 202.
+  cdn: >-
+    The free Autocomplete API is fronted by CloudFront and returns
+    cache-control: public, must-revalidate, max-age=2629746 (about 30 days), with x-cache
+    Hit/Miss headers. Verified probed 2026-08-13.
+cors:
+  autocomplete: 'access-control-allow-origin: *'
+  verified: probed
+  note: Browser-callable without a proxy; the other hosts did not advertise CORS on probe.
+cross_links:
+  errors: errors/clearbit-problem-types.yml
+  lifecycle: lifecycle/clearbit-lifecycle.yml
+  authentication: authentication/clearbit-authentication.yml
+  rate_limits: rate-limits/clearbit-rate-limits.yml
+  webhooks: asyncapi/clearbit-webhooks.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,118 @@
+generated: '2026-08-13'
+method: derived
+status: candidate
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+source: >-
+  Derived from the Clearbit REST endpoints verified live on 2026-08-13. No first-party MCP server
+  exists; searched the Clearbit docs, help centre, the github.com/clearbit organization, npm and
+  the public MCP registries.
+description: >-
+  Clearbit ships no MCP server. The Clearbit MCP integrations that surface in search — Zapier,
+  viaSocket, Apify — are all third-party wrappers built on top of the REST API by other companies,
+  not a Clearbit agent surface, and none of them is credited to Clearbit here. HubSpot, Clearbit's
+  parent, operates its own MCP server; that belongs to HubSpot's profile, not to Clearbit's. The
+  tools below are a CANDIDATE mapping of what a Clearbit MCP server would expose, derived from
+  endpoints this pipeline probed live. Nothing here is callable today.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  verified: searched
+  note: >-
+    mode: none — nobody ships a Clearbit MCP server, first-party or otherwise official. auth
+    records what a server would need (the account secret API key over HTTP Basic or Bearer), not
+    an observed MCP auth flow. No endpoint URL is guessed: a fabricated MCP path that happened to
+    return 200 would read as a verified agent surface.
+server: null
+third_party_wrappers:
+  note: >-
+    Recorded for completeness and explicitly NOT credited to Clearbit. Each is another company's
+    product that calls the Clearbit REST API.
+  examples:
+  - vendor: Zapier
+    url: https://zapier.com/mcp/clearbit
+  - vendor: viaSocket
+    url: https://viasocket.com/mcp/clearbit
+  - vendor: Apify (tomba-io)
+    url: https://apify.com/tomba-io/clearbit-company/api/mcp
+blocker:
+  issue: api-key-issuance-closed
+  detail: >-
+    Even a well-built MCP server would have no new users. Clearbit stopped issuing API keys for
+    accounts created after 2023 and sunset free accounts on 2025-04-30, so a new integrator cannot
+    obtain a credential. See lifecycle/clearbit-lifecycle.yml.
+tools:
+- name: enrich_person
+  description: Look up a person by email address and return their enriched profile.
+  source_endpoint: GET https://person.clearbit.com/v2/people/find?email=
+  verified: probed
+  probe_status: 401
+  async_note: May return 202 (queued). See conventions/clearbit-conventions.yml.
+- name: enrich_company
+  description: Look up a company by domain and return its enriched firmographic record.
+  source_endpoint: GET https://company.clearbit.com/v2/companies/find?domain=
+  verified: probed
+  probe_status: 401
+- name: enrich_combined
+  description: Look up a person and their company together from a single email address.
+  source_endpoint: GET https://person.clearbit.com/v2/combined/find?email=
+  verified: probed
+  probe_status: 401
+- name: enrich_combined_streaming
+  description: >-
+    Same as enrich_combined but against the streaming host, which holds the connection open up to
+    60 seconds so a queued lookup resolves in-band instead of returning 202.
+  source_endpoint: GET https://person-stream.clearbit.com/v2/combined/find?email=
+  verified: probed
+  probe_status: 401
+  agent_note: >-
+    The variant an autonomous caller should prefer — it removes the 202 branch that a naive client
+    silently mishandles.
+- name: reveal_company_from_ip
+  description: Resolve an IP address to the company behind it.
+  source_endpoint: GET https://reveal.clearbit.com/v1/companies/find?ip=
+  verified: probed
+  probe_status: 401
+- name: find_domain_by_name
+  description: Resolve a company name to its primary domain (Name to Domain).
+  source_endpoint: GET https://company.clearbit.com/v1/domains/find?name=
+  verified: probed
+  probe_status: 401
+  lifecycle_note: Documented by the provider as a free legacy product that is unsupported.
+- name: suggest_companies
+  description: >-
+    Autocomplete company candidates from a name fragment. The only Clearbit endpoint callable
+    without a credential.
+  source_endpoint: GET https://autocomplete.clearbit.com/v1/companies/suggest?query=
+  verified: probed
+  probe_status: 200
+  returns: 'Array of {name, domain, logo}'
+  caveat: logo is now always null (sunset 2025-09-09).
+- name: search_prospects
+  description: Search for people matching firmographic and persona filters.
+  source_endpoint: GET https://prospector.clearbit.com/v1/people/search?domain=
+  verified: probed
+  probe_status: 401
+- name: search_companies
+  description: Search for companies matching a structured query (Discovery).
+  source_endpoint: GET https://discovery.clearbit.com/v1/companies/search?query=
+  verified: probed
+  probe_status: 401
+- name: calculate_risk
+  description: Score an email address for fraud/abuse risk.
+  source_endpoint: GET https://risk.clearbit.com/v1/calculate?email=
+  verified: probed
+  probe_status: 401
+  lifecycle_note: Documented by the provider as a free legacy product that is unsupported.
+tool_count: 10
+input_schema_note: >-
+  NO inputSchema is published for any of these. Clearbit ships no OpenAPI, so parameters cannot be
+  inherited from a machine-readable contract — they are the query-string keys observed on the live
+  endpoints. A tool crosswalk (mcp/clearbit-tool-crosswalk.yml) is deliberately NOT emitted for
+  this provider: there are no operationIds to bind to.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

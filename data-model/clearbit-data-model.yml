@@ -1,0 +1,162 @@
+generated: '2026-08-13'
+method: searched
+source: https://clearbit.com/attributes
+docs: https://clearbit.com/attributes
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+description: >-
+  Clearbit's data model is two root entities — Person and Company — joined on a domain, not on an
+  opaque identifier. There are no resource IDs and no CRUD surface: every endpoint is a lookup that
+  resolves a natural key (email, domain, IP address, company name) to a snapshot record. The
+  attribute reference at clearbit.com/attributes is server-rendered and is the only complete,
+  machine-readable-by-scraping description of the response shapes the provider still publishes; the
+  endpoint reference itself is trapped behind a JavaScript-rendered docs SPA.
+derived_from: docs
+derived_from_note: >-
+  DERIVED FROM THE PUBLISHED ATTRIBUTE REFERENCE, NOT FROM AN OPENAPI. Clearbit publishes no
+  machine-readable spec, so relationships below were read from the attribute descriptions and from
+  the documented behaviour of each endpoint — not computed from $ref graphs.
+identifiers:
+  style: natural-key
+  note: >-
+    No surrogate IDs, no id-prefix scheme. A record is addressed by the key you look it up with.
+  keys:
+  - key: email
+    resolves: Person
+    endpoint: GET https://person.clearbit.com/v2/people/find?email=
+  - key: domain
+    resolves: Company
+    endpoint: GET https://company.clearbit.com/v2/companies/find?domain=
+  - key: email
+    resolves: Person + Company together
+    endpoint: GET https://person.clearbit.com/v2/combined/find?email=
+  - key: ip
+    resolves: Company
+    endpoint: GET https://reveal.clearbit.com/v1/companies/find?ip=
+  - key: company name
+    resolves: Company (domain)
+    endpoint: GET https://company.clearbit.com/v1/domains/find?name=
+  - key: query fragment
+    resolves: Company candidates
+    endpoint: GET https://autocomplete.clearbit.com/v1/companies/suggest?query=
+entities:
+- name: Person
+  description: A single individual, resolved from an email address.
+  attribute_count_published: 60+
+  attribute_groups:
+  - group: name
+    attributes: [Given Name, Family Name, Full Name]
+  - group: geo
+    attributes: [Location, Time Zone, UTC Offset, City, State, State Code, Country, Country Code, Latitude, Longitude]
+  - group: profile
+    attributes: [Bio, Site, Avatar]
+  - group: employment
+    attributes: [Employment Domain, Employment Name, Employment Title, Employment Role, Employment Sub Role, Employment Seniority]
+    note: >-
+      Role, Sub Role and Seniority are standardized enumerations derived from the free-text title;
+      the provider links a "See all possible values" page for each.
+  - group: social
+    attributes: [Facebook Handle, GitHub Handle, GitHub ID, GitHub Avatar, GitHub Company, GitHub Blog, GitHub Followers, GitHub Following, Twitter Handle, Twitter ID, Twitter Bio, Twitter Followers, Twitter Following, Twitter Statuses, Twitter Favorites, Twitter Location, Twitter Site, Twitter Avatar, LinkedIn Handle, Gravatar Handle, Gravatar URLs, Gravatar Avatar, Gravatar Avatars]
+  - group: match-quality
+    attributes: [Fuzzy, Email Provider]
+    note: >-
+      Fuzzy indicates whether the match was exact or approximate — the field an agent should gate
+      on before trusting the record. Email Provider flags free-mail domains, distinguishing
+      personal from work email.
+  - group: freshness
+    attributes: [Indexed At, Active At, Inactive At]
+    note: >-
+      Indexed At is when the record was last updated in Clearbit's database, and is the field that
+      determines whether a lookup returns 200 or 202 (see conventions/clearbit-conventions.yml).
+- name: Company
+  description: A single company, resolved from a domain, an IP address or a name.
+  attribute_count_published: 100+
+  attribute_groups:
+  - group: identity
+    attributes: [Name, Legal Name, Domain, Domain Aliases, Description, Founded Year]
+  - group: contact
+    attributes: [Phone Numbers, Email Addresses]
+  - group: classification
+    attributes: [Sector, Industry Group, Industry, Sub Industry, GICS 8 Digit Code, SIC 2 Digit Code, SIC 4 Digit Codes, NAICS 2 Digit Code, NAICS 6 Digit Codes, NAICS 6 Digit 2022 Code, Tags]
+    note: >-
+      Four-tier proprietary hierarchy plus three external standards (GICS, SIC, NAICS 2017 and
+      2022). This is the richest standards-aligned part of the model.
+  - group: geo
+    attributes: [Location, Time Zone, UTC Offset, Street Number, Street Name, Sub Premise, Street Address, City, Postal Code, State, State Code, Country, Country Code, Latitude, Longitude]
+  - group: brand
+    attributes: [Logo]
+    deprecated_note: >-
+      The Logo attribute remains in the Enrichment response, but the standalone Logo API host was
+      sunset 2025-12-08 and no longer resolves. See lifecycle/clearbit-lifecycle.yml.
+  - group: social
+    attributes: [Facebook Handle, Facebook Likes, LinkedIn Handle, Twitter Handle, Twitter ID, Twitter Bio]
+  - group: metrics
+    attributes: [Traffic Rank, Employees, Employees Range, Raised, Alexa US Rank, Alexa Global Rank]
+    note: >-
+      trafficRank was added in API version 2022-12-15; alexaUsRank and alexaGlobalRank were kept
+      until June 2023 and are documented by the provider as increasingly stale.
+  - group: firmographic
+    attributes: [Type, Tech, Tech Categories]
+relationships:
+- from: Person
+  to: Company
+  cardinality: belongs_to
+  via: employment.domain
+  note: >-
+    The join is a domain string, not a foreign key. Person.Employment Domain is documented as "the
+    domain of the company the person works for" and is the same value Company is addressed by.
+- from: Company
+  to: Person
+  cardinality: has_many
+  via: Prospector search by domain
+  endpoint: GET https://prospector.clearbit.com/v1/people/search?domain=
+- from: Company
+  to: Company
+  cardinality: has_one
+  via: ultimateParent.domain
+  note: >-
+    Corporate parent link, introduced as ultimate_parent in API version 2019-04-11 and renamed to
+    camelCase ultimateParent in 2019-12-19.
+- from: IP address
+  to: Company
+  cardinality: resolves_to
+  via: Reveal lookup
+  endpoint: GET https://reveal.clearbit.com/v1/companies/find?ip=
+- from: Combined response
+  to: [Person, Company]
+  cardinality: composes
+  via: /v2/combined/find
+  note: >-
+    The Combined endpoint is the model's only composition primitive — it returns both root entities
+    in a single response rather than offering field expansion.
+enumerations_published:
+- Employment Role
+- Employment Sub Role
+- Employment Seniority
+- Time Zone
+- Sector
+- Industry Group
+- Industry
+- Sub Industry
+- GICS 8 Digit Code
+- SIC 2 Digit Code
+- SIC 4 Digit Codes
+- NAICS 2 Digit Code
+- NAICS 6 Digit Codes
+- Tags
+enumerations_note: >-
+  Each of the above is documented with a "See all possible values" link on clearbit.com/attributes.
+  The value lists themselves are separate pages and were not harvested in this pass.
+scale_claimed:
+  companies: 40 million
+  contacts: 400 million
+  source: https://help.clearbit.com/hc/en-us/articles/6987867587607-Logo-API-I-FAQ
+render: null
+render_note: No subway/ diagram exists in this repo yet.
+evidence:
+- url: https://clearbit.com/attributes
+  http_status: 200
+  fetched: '2026-08-13'
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

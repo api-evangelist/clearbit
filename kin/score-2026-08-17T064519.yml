@@ -1,0 +1,35 @@
+# Kin Score artifact — clearbit — 2026-08-17T064519
+# The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
+---
+kin_score:
+  slug: clearbit
+  schema_version: 0.11.0
+  scored_at: '2026-08-17'
+  run_ts: 2026-08-17T064519
+  composite: 58.9
+  band: strong
+  facets:
+    discoverability: 81.5
+    contract_quality: 63.0
+    governance: 12.5
+    operational_transparency: 71.1
+    developer_ergonomics: 47.8
+    commercial_clarity: 73.7
+  agent_readiness:
+    score: 37.4
+    band: agent-ready
+    dimensions:
+      spec_presence: true
+      agentic_access: false
+      mcp_server: false
+      auth_clarity: true
+      idempotency: false
+      error_semantics: documented
+      openapi_examples: false
+      rate_limit_signal: documented
+      event_surface_described: true
+      agent_skills: false
+      well_known_catalog: false
+      consent_identity: false
+      agent_card: false
+      dry_run_mode: false

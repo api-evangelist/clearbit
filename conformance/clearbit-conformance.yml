@@ -1,0 +1,140 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  Derived from live probes of every Clearbit API host on 2026-08-13 plus the provider's help centre
+  and trust page. Clearbit publishes no OpenAPI, so nothing here is derived from a spec.
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+description: >-
+  Clearbit is a plain JSON-over-HTTPS API with a bespoke error envelope and no adoption of the
+  cross-cutting web-API standards. It conforms to none of the security, error or discovery RFCs
+  checked below. Its one genuinely standards-aligned surface is the data itself: company
+  classification is published against GICS, SIC and NAICS (2017 and 2022).
+standards:
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No authorization server, no token endpoint, no /.well-known/oauth-authorization-server (404 on
+    all hosts). Authentication is a single long-lived account secret.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returned 404 on all eight hosts.
+- id: rfc6750-bearer
+  conforms: true
+  evidence: >-
+    Authorization: Bearer <key> is accepted and evaluated — a bogus bearer produced
+    invalid_api_key rather than auth_required. Probed 2026-08-13.
+  note: >-
+    Bearer transport only. The token is a static API key, not an OAuth access token, so this is
+    syntactic conformance rather than the full RFC 6750 model.
+- id: rfc7617-http-basic
+  conforms: true
+  evidence: >-
+    API key as Basic username with empty password is accepted and evaluated. Probed 2026-08-13.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors are served as application/json with a bespoke {"error":{"type","message"}} envelope, not
+    application/problem+json. See errors/clearbit-problem-types.yml.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returned 404 on all eight hosts on 2026-08-13.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: >-
+    No Sunset or Deprecation response headers on any host, including on APIs the provider has
+    publicly announced as legacy/unsupported. Retirements are announced only in prose on
+    clearbit.com/changelog.
+  note: >-
+    The most consequential miss for an agent. Clearbit gave six-to-ten months of notice on every
+    sunset, but none of it was ever on the wire.
+- id: rfc8615-well-known
+  conforms: false
+  evidence: 44 well-known paths probed across 8 hosts, 0 hits. See well-known/clearbit-well-known.yml.
+- id: rfc9111-http-caching
+  conforms: partial
+  evidence: >-
+    The free Autocomplete API returns cache-control: public, must-revalidate, max-age=2629746 and
+    CloudFront x-cache Hit/Miss. The authenticated hosts emit no cache-control.
+- id: ietf-ratelimit-headers
+  conforms: false
+  evidence: >-
+    Rate limit state IS published, but under the legacy X-RateLimit-* names
+    (x-ratelimit-limit / x-ratelimit-remaining / x-ratelimit-reset), not the IETF
+    draft RateLimit/RateLimit-Policy fields. No Retry-After on exhaustion.
+  note: Real signal, non-standard spelling.
+- id: json-api
+  conforms: false
+  evidence: Plain JSON documents; no type/id/attributes/relationships envelope.
+- id: hal-hateoas
+  conforms: false
+  evidence: No hypermedia links in any observed response.
+- id: openapi
+  conforms: false
+  evidence: >-
+    Probed /openapi.json, /openapi.yaml, /swagger.json, /v1/openapi.json, /api-docs, /docs and
+    /redoc against the marketing host, the docs host and every API host on 2026-08-13. The API
+    hosts answered with their own unknown_route JSON 404; the docs host is a client-rendered SPA.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    /asyncapi.yaml and /asyncapi.json returned 404 on every host probed. Two webhook surfaces are
+    documented in prose only — see asyncapi/clearbit-webhooks.yml.
+- id: graphql
+  conforms: partial
+  evidence: >-
+    A real GraphQL endpoint exists at https://app.clearbit.com/graphql — POST returns a JSON 401
+    {"error":{"type":"auth"}} while every neighbouring path returns an HTML 404 — but it is the
+    private API behind the dashboard SPA. It is undocumented, introspection is refused
+    anonymously, and it is not sold as a product. See graphql/clearbit-graphql-endpoint-probe.yml.
+  note: >-
+    Not a published GraphQL API. The schema files in this repo's graphql/ directory are an API
+    Evangelist conceptual translation of the REST surface, not this endpoint's schema.
+- id: cors
+  conforms: partial
+  evidence: 'autocomplete.clearbit.com returns access-control-allow-origin: *; other hosts do not advertise CORS.'
+- id: hsts-preload
+  conforms: true
+  evidence: >-
+    Every host returned strict-transport-security: max-age=63072000; includeSubDomains; preload on
+    2026-08-13. TLS 1.3 throughout.
+- id: dnssec
+  conforms: false
+  evidence: clearbit.com is not DNSSEC signed. See security/clearbit-domain-security.yml.
+- id: gics
+  conforms: true
+  evidence: 'Company records publish GICS 8 Digit Code. Source: https://clearbit.com/attributes'
+- id: sic
+  conforms: true
+  evidence: Company records publish SIC 2 Digit Code and SIC 4 Digit Codes.
+- id: naics
+  conforms: true
+  evidence: >-
+    Company records publish NAICS 2 Digit Code, NAICS 6 Digit Codes (2017) and NAICS 6 Digit 2022
+    Code — both vintages side by side.
+- id: iso-3166
+  conforms: true
+  evidence: Country Code and State Code attributes on both Person and Company records.
+- id: iana-tz
+  conforms: true
+  evidence: Time Zone attribute uses IANA tz identifiers (example given as America/Los_Angeles).
+compliance_program:
+  published: true
+  url: https://clearbit.com/trust#compliance
+  items:
+  - California data broker registration
+  - CCPA
+  - GDPR alignment
+  - Published subprocessor list
+  - Annual third-party penetration testing
+  caution: >-
+    Clearbit holds no certification of its own. The SOC 2 / ISO 27001 / FedRAMP / PCI DSS strings
+    on the trust page describe AWS and GCP infrastructure. See security/clearbit-trust-center.yml.
+summary:
+  checked: 22
+  conforms: 8
+  partial: 2
+  does_not_conform: 12
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

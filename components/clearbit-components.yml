@@ -1,0 +1,90 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  Observed in the page source of https://dashboard.clearbit.com/docs and https://clearbit.com/ on
+  2026-08-13, corroborated by
+  https://help.clearbit.com/hc/en-us/articles/9255464065175-Clearbit-by-HubSpot-Getting-Started-with-Clearbit-Forms-for-HubSpot
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+description: >-
+  Clearbit ships one client-side component: a browser tag, loaded from its own CDN, that identifies
+  the visiting company (Reveal) and drives form shortening (Forms/Capture). It is distributed only
+  as a script snippet from x.clearbitjs.com — it is not on npm, and it is not versioned in a way a
+  consumer can pin. Distinct from the server-side SDKs in packages/clearbit-packages.yml.
+components:
+- family: Reveal / Forms browser tag
+  name: clearbit.js
+  kind: script-tag
+  loader: 'https://x.clearbitjs.com/v1/<publishable_key>/clearbit.min.js'
+  snippet_version: '3.1.0'
+  snippet_version_source: >-
+    The inline loader snippet declares SNIPPET_VERSION = "3.1.0". This versions the bootstrap
+    snippet, not the library it fetches.
+  registry: cdn
+  version: null
+  version_note: >-
+    UNPINNED. The URL carries a /v1/ path segment and the account's publishable key, but no library
+    version — it floats to whatever Clearbit currently serves. There is no jsDelivr or unpkg
+    package to query, and no version metadata endpoint. A consumer cannot tell what code they are
+    getting, and neither can we; recorded as null rather than guessed.
+  auth: publishable key in the URL path
+  global: window.clearbit
+  methods_declared:
+  - trackSubmit
+  - trackClick
+  - trackLink
+  - trackForm
+  - pageview
+  - identify
+  - reset
+  - group
+  - track
+  - ready
+  - alias
+  - page
+  - once
+  - off
+  - on
+  note: >-
+    The method surface is Segment's analytics.js shape. Observed on clearbit.com's own pages, which
+    load the tag with a publishable key.
+  purpose:
+  - Reveal — de-anonymize the visiting company by IP for on-site personalization.
+  - Forms / Capture — shorten forms by prefilling from enrichment.
+  official: true
+  status: legacy
+  status_note: >-
+    Clearbit's free tooling was sunset 2025-04-30 and new accounts are not created; the tag
+    survives for existing customers and on Clearbit's own marketing site.
+- family: Reveal callback contract
+  name: window.revealCallback / window.revealLoadedPromise
+  kind: js-integration-hook
+  loader: bundled with the page, not separately distributed
+  registry: cdn
+  version: null
+  version_note: >-
+    Not a distributed package — an inline integration contract observed in the source of
+    https://clearbit.com/changelog. No version to record.
+  timeout_ms: 10000
+  description: >-
+    Clearbit's own site wraps the tag in a promise with a 10-second REVEAL_TIMEOUT and a
+    window.revealCallback resolver, the documented pattern for gating page content on a Reveal
+    result.
+  official: true
+not_components:
+  note: >-
+    Server-side client libraries (npm clearbit, gem clearbit, PyPI clearbit, clearbit-go) are
+    recorded in packages/clearbit-packages.yml, not here.
+component_count: 2
+evidence:
+- url: https://dashboard.clearbit.com/docs
+  http_status: 200
+  fetched: '2026-08-13'
+  matched: x.clearbitjs.com/v1/
+- url: https://clearbit.com/changelog
+  http_status: 200
+  fetched: '2026-08-13'
+  matched: REVEAL_TIMEOUT / revealCallback
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

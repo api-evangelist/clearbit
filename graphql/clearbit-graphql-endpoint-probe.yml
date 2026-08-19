@@ -1,0 +1,87 @@
+generated: '2026-08-13'
+method: probed
+source: https://app.clearbit.com/graphql
+provider: Clearbit (HubSpot Breeze Intelligence)
+providerId: clearbit
+status: gated
+description: >-
+  Contract discovery (pipeline STEP 0b) found a real, live GraphQL endpoint at
+  https://app.clearbit.com/graphql. It is the private API behind the Clearbit dashboard SPA, it is
+  fully authentication-gated, and it is not documented anywhere on Clearbit's public developer
+  surface. Introspection is refused anonymously, so NO SCHEMA WAS CAPTURED and none was inferred.
+  This file records the endpoint's existence and its gate — nothing more.
+endpoint:
+  url: https://app.clearbit.com/graphql
+  method: POST
+  content_type: application/json
+  http_status: 401
+  body: '{"error":{"type":"auth"}}'
+  auth: session/cookie (dashboard login)
+  introspection: refused
+evidence:
+- test: POST introspection query {__schema{queryType{name}}}
+  status: 401
+  body: '{"error":{"type":"auth"}}'
+- test: POST a deliberately invalid query { nonsense }
+  status: 401
+  body: '{"error":{"type":"auth"}}'
+  finding: >-
+    Identical response, which proves authentication is evaluated BEFORE the query is parsed. There
+    is no error-oracle to fingerprint the schema through.
+- test: POST with Apollo client headers (graphql-client-name / graphql-client-version)
+  status: 401
+  body: '{"error":{"type":"auth"}}'
+- test: GET /graphql
+  status: 200
+  content_type: text/html
+  finding: Returns the dashboard SPA shell, not a GraphiQL console.
+- test: GET /graphql?query=...
+  status: 200
+  content_type: text/html
+  finding: SPA shell. GET transport is not wired to the GraphQL handler.
+- test: OPTIONS /graphql
+  status: 404
+  finding: 'No CORS preflight handler; x-cascade: pass.'
+not_a_false_positive:
+  concern: >-
+    app.clearbit.com is a single-page app whose catch-all answers HTTP 200 with HTML for arbitrary
+    paths (/openapi.json, /swagger.json, /redoc all return the SPA shell). That is the dominant
+    false positive in contract discovery, so the finding was control-tested.
+  controls:
+  - path: /graphqlzzz
+    method: POST
+    status: 404
+    body: <h1>Not Found</h1>
+  - path: /api/graphql
+    method: POST
+    status: 404
+    body: <h1>Not Found</h1>
+  - path: /v1/graphql
+    method: POST
+    status: 404
+    body: <h1>Not Found</h1>
+  - path: /randompath123
+    method: POST
+    status: 404
+    body: <h1>Not Found</h1>
+  conclusion: >-
+    Only /graphql returns a JSON 401 from the API layer; every neighbouring path returns an HTML
+    404. The handler is real and specific to that path.
+  corroboration: >-
+    The dashboard bundle at cdn.clearbit.com/x/static/js/main.77ecf137.js ships graphql-tag and
+    emits the Apollo graphql-client-name / graphql-client-version headers, which is consistent with
+    an Apollo GraphQL client talking to this endpoint.
+relationship_to_other_files_in_this_directory:
+  warning: >-
+    graphql/clearbit-graphql.md and graphql/clearbit-schema.graphql in this repo are a CONCEPTUAL
+    translation of the public REST surface into GraphQL types, authored by API Evangelist. They are
+    NOT this endpoint's schema and must never be presented as such. The real schema behind
+    app.clearbit.com/graphql is unknown and can only be obtained by authenticated introspection.
+public_api_note: >-
+  This endpoint is not part of Clearbit's public product. The documented, sellable APIs are the
+  REST hosts (person/company/reveal/prospector/risk/discovery/autocomplete.clearbit.com). No
+  GraphQL pointer to app.clearbit.com is wired into apis.yml, because the provider does not publish
+  it as an API.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
