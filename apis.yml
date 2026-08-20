@@ -56,6 +56,10 @@ apis:
   baseURL: https://person.clearbit.com
   tags:
   - Enrichment
+  - Persons
+  - Company
+  tags_raw:
+  - Enrichment
   - Person
   - Company
   properties:
