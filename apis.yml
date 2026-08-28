@@ -13,6 +13,17 @@ description: >-
   wind-down — new API keys have not been issued since 2023, free accounts were sunset 2025-04-30,
   and the free Logo API was sunset 2025-12-08 and its host no longer resolves. Only the free
   Autocomplete API is callable without a credential.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: free
   onboarding: closed
