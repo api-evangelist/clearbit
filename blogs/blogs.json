@@ -2,23 +2,21 @@
   "repo": "clearbit",
   "feeds": [
     {
-      "source": "https://clearbit-blog.ghost.io/rss/",
-      "feed_url": "https://clearbit-blog.ghost.io/rss/",
-      "title": "",
-      "saved": 0,
-      "method": "feed",
-      "nature": "undetermined",
-      "nature_basis": null
-    },
-    {
       "source": "https://help.clearbit.com/",
       "feed_url": "https://help.clearbit.com/",
       "title": "",
       "saved": 0,
       "method": "none"
+    },
+    {
+      "source": "https://clearbit-blog.ghost.io/rss/",
+      "feed_url": "https://clearbit-blog.ghost.io/rss/",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
     }
   ],
-  "fetched": "2026-08-30T22:33:40Z",
+  "fetched": "2026-09-06T19:17:18Z",
   "post_count": 19,
   "feed_nature": "vendor-blog",
   "feed_nature_basis": "path_blog",
