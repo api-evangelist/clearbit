@@ -229,6 +229,10 @@ apis:
   humanURL: https://clearbit.com/logo
   baseURL: https://logo.clearbit.com
   tags:
+  - Logo
+  - Free
+  - Retired
+  tags_raw:
   - Logos
   - Free
   - Retired
