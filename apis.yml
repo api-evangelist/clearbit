@@ -188,6 +188,11 @@ apis:
   humanURL: https://help.clearbit.com/hc/en-us/articles/8502992633111-Autocomplete-Name-to-Domain-and-Risk-API-FAQ
   baseURL: https://risk.clearbit.com
   tags:
+  - Risk Management
+  - Fraud
+  - Email
+  - Legacy
+  tags_raw:
   - Risk
   - Fraud
   - Email
