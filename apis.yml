@@ -189,7 +189,7 @@ apis:
   baseURL: https://risk.clearbit.com
   tags:
   - Risk Management
-  - Fraud
+  - Fraud Prevention
   - Email
   - Legacy
   tags_raw:
