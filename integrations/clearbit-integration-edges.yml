@@ -1,0 +1,33 @@
+generated: '2026-10-14'
+edges:
+- partner_name: Twilio Segment
+  partner: segment
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://www.twilio.com/docs/segment/connections/destinations/catalog/clearbit-enrichment
+  coverage_role:
+  - destination
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - clearbit-enrichment
+      - clearbit-reveal
+      status: PUBLIC
+      partner_owned: false
+      connection_modes:
+      - cloud:mobile
+      - cloud:server
+      - cloud:web
+      accepted_methods:
+      - Identify
+      - Page
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
+method: searched
+checked:
+- https://www.twilio.com/docs/segment/connections/destinations/catalog/clearbit-enrichment
+source: https://www.twilio.com/docs/segment/connections/destinations/catalog/clearbit-enrichment
