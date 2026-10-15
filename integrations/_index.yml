@@ -38,7 +38,7 @@
     app_slug: clearbit
     beta: false
     builder: unknown (not in the directory record)
-  status: pending-partner-spec
+  status: not-a-workflow
   arazzo: null
 - slug: clearbit-n8n
   label: n8n
@@ -63,7 +63,7 @@
     node_path: Clearbit
     trigger: false
     builder: n8n (built-in node)
-  status: pending-partner-spec
+  status: not-a-workflow
   arazzo: null
 - slug: clearbit-pipedream
   label: Pipedream
@@ -89,5 +89,5 @@
     actions: true
     sources: false
     builder: Pipedream repo (component)
-  status: pending-partner-spec
+  status: not-a-workflow
   arazzo: null
