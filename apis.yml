@@ -45,6 +45,17 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/clearbit.p
 tags:
 - Sales Intelligence
 - B2B
+- Data Enrichment
+- Reveal
+- HubSpot
+- Marketing
+- Data
+- Firmographics
+- Lead Enrichment
+- Company Data
+tags_raw:
+- Sales Intelligence
+- B2B
 - Enrichment
 - Reveal
 - HubSpot
@@ -66,7 +77,7 @@ apis:
   humanURL: https://dashboard.clearbit.com/docs
   baseURL: https://person.clearbit.com
   tags:
-  - Enrichment
+  - Data Enrichment
   - Persons
   - Company
   tags_raw:
@@ -98,6 +109,11 @@ apis:
   humanURL: https://dashboard.clearbit.com/docs
   baseURL: https://company.clearbit.com
   tags:
+  - Data Enrichment
+  - Company
+  - Firmographics
+  - Name to Domain
+  tags_raw:
   - Enrichment
   - Company
   - Firmographics
@@ -120,6 +136,10 @@ apis:
   humanURL: https://help.clearbit.com/hc/en-us/articles/10065050209815-What-is-a-202-Status-Code
   baseURL: https://person-stream.clearbit.com
   tags:
+  - Data Enrichment
+  - Streaming
+  - Long Polling
+  tags_raw:
   - Enrichment
   - Streaming
   - Long Polling
