@@ -91,3 +91,64 @@
     builder: Pipedream repo (component)
   status: not-a-workflow
   arazzo: null
+- slug: clearbit-go-module-proxy
+  label: Go module proxy
+  partner_name: Go module proxy
+  category: official SDK (Go)
+  type: register
+  channel: package-registry
+  evidence: https://pkg.go.dev/github.com/clearbit/clearbit-go
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/clearbit/clearbit-go
+      version: v1.1.0
+      released: '2021-11-12'
+      released_field: Time
+      lapsed: true
+      page: https://pkg.go.dev/github.com/clearbit/clearbit-go
+      repo_leg: github-org:clearbit
+      publisher_leg: org:clearbit
+      matched_by: github-org
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
+- slug: clearbit-pypi
+  label: PyPI
+  partner: pypi
+  partner_name: PyPI
+  category: official SDK (Python)
+  type: register
+  channel: package-registry
+  evidence: https://pypi.org/project/clearbit/
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: clearbit
+      version: 0.1.7
+      released: '2017-10-24'
+      released_field: upload_time
+      lapsed: true
+      page: https://pypi.org/project/clearbit/
+      repo_leg: domain:clearbit.com
+      publisher_leg: email:clearbit.com
+      matched_by: domain+name-among-holders
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
